@@ -5,7 +5,7 @@
 
 #define led LED_BUILTIN
 
-Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd, uint16_t milli_step) // Constructor
+Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) // Constructor
 {
     _ee = ee;
     _e = e;
@@ -13,7 +13,6 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd, uint16_t milli
     _d = m;
     _dd = d;
 
-    _milliStep = milli_step;
     memoriaLastIdx = 0;
     _inicio = 1;
 
@@ -46,12 +45,12 @@ uint16_t Lum::processedRead(uint8_t sens, int base=5)
       idx = i;
     }
   }
-  float limiteSens = limite[idx];
-  float read = analogRead(sens);
-  float range = _sensValueRange[idx];
-  float b = base;
+  float limiteSens = (float)limite[idx];
+  float read = (float)analogRead(sens);
+  float range = (float)_sensValueRange[idx];
+  float b = (float)base;
 
-  float normalizado = (limiteSens - read)/ _sensValueRange[idx] * b;
+  float normalizado = (read - limiteSens)/ _sensValueRange[idx] * b;
   Serial.print(normalizado);
   Serial.print("float ");
   uint16_t rtrn = normalizado;
@@ -60,8 +59,8 @@ uint16_t Lum::processedRead(uint8_t sens, int base=5)
 
 void Lum::setMemoria()
 {
-  uint16_t read = millis()%(MEMSIZE*_milliStep);
-  uint32_t idx = (read - read%_milliStep)/_milliStep;
+  uint16_t read = millis()%(MEMSIZE*MILLISTEP);
+  uint32_t idx = (read - read%MILLISTEP)/MILLISTEP;
   
   memoria[idx][0] = analogRead(_ee);
   memoria[idx][1] = analogRead(_e);
@@ -75,7 +74,7 @@ void Lum::setMemoria()
 void Lum::defineLimite(int checkLast = 0)
 {
   if (!checkLast){
-    checkLast = 5000/_milliStep;
+    checkLast = 5000/MILLISTEP; // checa ultimos 5seg
   }
   int branco[5];
   int preto[5];

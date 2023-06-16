@@ -5,11 +5,12 @@
 
 
 #define MEMSIZE 500
+#define MILLISTEP 200
 #include "Arduino.h"
 
 class Lum{
   public:
-    Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd, uint16_t milliStep);
+    Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd);
     void setup();
     void run();
     void defineLimite(int checkLast=0);
@@ -24,7 +25,6 @@ class Lum{
     uint8_t _m;
     uint8_t _d;
     uint8_t _dd;
-    uint16_t _milliStep;
     uint8_t _inicio;
     float _sensValueRange[5];
 
