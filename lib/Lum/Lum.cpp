@@ -10,8 +10,8 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) // Constructor
     _ee = ee;
     _e = e;
     _m = m;
-    _d = m;
-    _dd = d;
+    _d = d;
+    _dd = dd;
 
     memoriaLastIdx = 0;
     _inicio = 1;
@@ -26,7 +26,6 @@ void Lum::setup() // Chamado no Setup()
 void Lum::run() // Roda comandos de rotina
 {
   setMemoria();
-  Serial.print(_inicio);
   if (_inicio > 0){
     defineLimite();
   }
@@ -45,14 +44,17 @@ uint16_t Lum::processedRead(uint8_t sens, int base=5)
       idx = i;
     }
   }
+  if (idx == -1){
+    Serial.println('F');
+  }
   float limiteSens = (float)limite[idx];
   float read = (float)analogRead(sens);
   float range = (float)_sensValueRange[idx];
   float b = (float)base;
 
+
   float normalizado = (read - limiteSens)/ _sensValueRange[idx] * b;
-  Serial.print(normalizado);
-  Serial.print("float ");
+
   uint16_t rtrn = normalizado;
   return rtrn;
 }
@@ -105,7 +107,9 @@ void Lum::defineLimite(int checkLast = 0)
     }
     if (_inicio == 2 && passou){
       Serial.println("passou 2");
-      branco[5] = min[5];
+      for (int j=0; j < 5; j++){
+        branco[j] = min[j];
+      }
       for (uint32_t mem=0; mem < MEMSIZE; mem++){
         for (uint8_t s=0; s < 5; s++){
           memoria[mem][s] = 0;
@@ -120,10 +124,20 @@ void Lum::defineLimite(int checkLast = 0)
     } 
     if (_inicio == 3 && passou) {
       Serial.println("passou 3");
-      preto[5] = max[5];
       for (int j=0; j < 5; j++){
-        limite[j] = branco[j] + (preto[j] - branco[j]) / 2;
+        preto[j] = max[j];
+      }
+      for (int j=0; j < 5; j++){
+        limite[j] = branco[j];
         _sensValueRange[j] = preto[j] - branco[j];
+
+        Serial.print(j);
+        Serial.print(" ");
+        Serial.print(limite[j]);
+        Serial.print(" ");
+        Serial.println(_sensValueRange[j]);
+
+
       }
       _inicio = 0;
 

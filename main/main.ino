@@ -12,8 +12,7 @@ Lum lum(
     SensorMeioEsq,
     SensorMeio,
     SensorMeioDir,
-    SensorForaDir,
-    200
+    SensorForaDir
 );
 
 void setup() {
