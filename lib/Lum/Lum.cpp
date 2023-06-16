@@ -32,7 +32,7 @@ void Lum::run() // Roda comandos de rotina
 
 }
 
-uint16_t Lum::processedRead(uint8_t sens, int base=5)
+uint16_t Lum::processedRead(uint8_t sens)
 {
   if (!limite[0]){
     return analogRead(sens);
@@ -47,15 +47,28 @@ uint16_t Lum::processedRead(uint8_t sens, int base=5)
   if (idx == -1){
     Serial.println('F');
   }
+  
+  return normalizeSensEntry(idx, sens);
+}
+
+uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
+  uint8_t idx = idxSensor;
   float limiteSens = (float)limite[idx];
-  float read = (float)analogRead(sens);
+  float read = (float)analogRead(entrada);
   float range = (float)_sensValueRange[idx];
-  float b = (float)base;
+  float b = (float)OUTPUTRANGE;
 
 
   float normalizado = (read - limiteSens)/ _sensValueRange[idx] * b;
 
   uint16_t rtrn = normalizado;
+  
+  if (OUTPUTRANGE < rtrn < OUTPUTRANGE*10){
+    rtrn = OUTPUTRANGE;
+  } else if (rtrn > OUTPUTRANGE*10){
+    rtrn = 0;
+  }
+
   return rtrn;
 }
 

@@ -7,6 +7,7 @@
 
 #include <Lum.h>
 
+
 Lum lum(
     SensorForaEsq,
     SensorMeioEsq,
@@ -15,14 +16,24 @@ Lum lum(
     SensorForaDir
 );
 
-void setup() {
+
+void setup() 
+{
 lum.setup();
 Serial.begin(9600);
 }
 
-void loop() {
+
+void loop() 
+{
 lum.run();
 
+mostraOutputSensores();
+}
+
+
+void mostraOutputSensores()
+{
 Serial.print(" ");
 Serial.print(lum.processedRead(SensorForaEsq));
 Serial.print(" | ");

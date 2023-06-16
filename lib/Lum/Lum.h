@@ -4,8 +4,10 @@
 #define Lum_h
 
 
+#define OUTPUTRANGE 10
 #define MEMSIZE 500
 #define MILLISTEP 200
+
 #include "Arduino.h"
 
 class Lum{
@@ -14,8 +16,9 @@ class Lum{
     void setup();
     void run();
     void defineLimite(int checkLast=0);
-    void setMemoria();\
-    uint16_t processedRead(uint8_t sens, int base=5);
+    void setMemoria();
+    uint16_t processedRead(uint8_t sens);
+    uint16_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
     uint16_t limite[5];
     uint16_t memoria[MEMSIZE][5];
     uint32_t memoriaLastIdx;
