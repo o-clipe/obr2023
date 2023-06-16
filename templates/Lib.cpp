@@ -3,29 +3,17 @@
 #include "Arduino.h"
 #include "Lib.h"
 
-Lib::Lib(int pin) // Constructor
+Lib::Lib() // Constructor
 {
-  _pin = pin;
+
 }
 
 void Lib::setup() // Chamado no Setup()
 {
-  pinMode(_pin, OUTPUT);
+
 }
 
-void Lib::dot()
+void Lib::run() // Comandos de rotina
 {
-  digitalWrite(_pin, HIGH);
-  delay(250);
-  digitalWrite(_pin, LOW);
-  delay(250);  
-}
-
-
-void Lib::dash()
-{
-  digitalWrite(_pin, HIGH);
-  delay(1000);
-  digitalWrite(_pin, LOW);
-  delay(250);
+ 
 }

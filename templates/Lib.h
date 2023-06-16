@@ -7,12 +7,11 @@
 
 class Lib{
   public:
-    Lib(int pin);
+    Lib();
     void setup();
-    void dot();
-    void dash();
+    void run();
   private:
-    int _pin;
+    int _none;
 };
 
 #endif
