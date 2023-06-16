@@ -63,9 +63,9 @@ uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
 
   uint16_t rtrn = normalizado;
   
-  if (OUTPUTRANGE < rtrn < OUTPUTRANGE*10){
+  if (rtrn > OUTPUTRANGE && rtrn < OUTPUTRANGE*2){
     rtrn = OUTPUTRANGE;
-  } else if (rtrn > OUTPUTRANGE*10){
+  } else if (rtrn > OUTPUTRANGE*2){
     rtrn = 0;
   }
 
