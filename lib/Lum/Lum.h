@@ -4,9 +4,10 @@
 #define Lum_h
 
 
-#define OUTPUTRANGE 10
-#define MEMSIZE 500
-#define MILLISTEP 200
+#define OUTPUTRANGE 20
+#define MEMSIZE 200
+#define MILLISTEP 100
+#define READSECATSTART 3
 
 #include "Arduino.h"
 
@@ -29,7 +30,9 @@ class Lum{
     uint8_t _d;
     uint8_t _dd;
     uint8_t _inicio;
-    float _sensValueRange[5];
+    uint16_t _sensValueRange[5];
+    int _cor1[5];
+    int _cor2[5];
 
 
 };
