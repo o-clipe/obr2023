@@ -6,6 +6,7 @@
 #define SensorForaDir A0
 
 #include <Lum.h>
+#include <Linha.h>
 
 
 Lum lum(
@@ -15,6 +16,8 @@ Lum lum(
     SensorMeioDir,
     SensorForaDir
 );
+
+Linha line(lum);
 
 
 void setup() 
@@ -28,6 +31,8 @@ void loop()
 {
 lum.run();
 
+Serial.print(line.checkState(lum.memoria[lum.memoriaLastIdx]));
+Serial.print(" -> ");
 mostraOutputSensores();
 }
 
