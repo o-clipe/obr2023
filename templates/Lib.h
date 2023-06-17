@@ -5,7 +5,8 @@
 
 #include "Arduino.h"
 
-class Lib{
+class Lib
+{
   public:
     Lib();
     void setup();

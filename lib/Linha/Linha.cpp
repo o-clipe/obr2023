@@ -10,17 +10,21 @@ Linha::Linha(Lum& lum_obj): _lum(lum_obj) // Constructor
 
 }
 
+
 void Linha::setup() // Chamado no Setup()
 {
 
 }
+
 
 void Linha::run() // Comandos de rotina
 {
   
 }
 
-String Linha::checkState(uint16_t sensorsPosition[5]){
+
+String Linha::checkState(uint16_t sensorsPosition[5])
+{
     uint16_t ee = _lum.normalizeSensEntry(0, sensorsPosition[0]);
     uint16_t e = _lum.normalizeSensEntry(1, sensorsPosition[1]);
     uint16_t m = _lum.normalizeSensEntry(2, sensorsPosition[2]);

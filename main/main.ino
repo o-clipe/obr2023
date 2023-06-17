@@ -9,14 +9,7 @@
 #include <Linha.h>
 
 
-Lum lum(
-    SensorForaEsq,
-    SensorMeioEsq,
-    SensorMeio,
-    SensorMeioDir,
-    SensorForaDir
-);
-
+Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
 Linha line(lum);
 
 

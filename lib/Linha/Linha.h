@@ -6,7 +6,8 @@
 #include "Arduino.h"
 #include "Lum.h"
 
-class Linha{
+class Linha
+{
   public:
     Linha(Lum& lum_obj);
     void setup();
