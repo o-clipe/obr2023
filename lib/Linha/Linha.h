@@ -8,11 +8,12 @@
 
 class Linha{
   public:
-    Linha();
+    Linha(Lum& lum_obj);
     void setup();
     void run();
+    String checkState(uint16_t sensorsPosition[5]);
   private:
-    int _none;
+    Lum& _lum;
 };
 
 #endif
