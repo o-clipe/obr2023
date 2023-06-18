@@ -7,15 +7,18 @@
 
 #include <Lum.h>
 #include <Linha.h>
+#include <Giros.h>
 
 
 Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
 Linha line(lum);
+Giros giros;
 
 
 void setup() 
 {
 lum.setup();
+giros.setup();
 Serial.begin(9600);
 }
 
@@ -23,10 +26,10 @@ Serial.begin(9600);
 void loop() 
 {
 lum.run();
-
-Serial.print(line.checkState(lum.memoria[lum.memoriaLastIdx]));
-Serial.print(" -> ");
-mostraOutputSensores();
+giros.print();
+// Serial.print(line.checkState(lum.memoria[lum.memoriaLastIdx]));
+// Serial.print(" -> ");
+// mostraOutputSensores();
 }
 
 
