@@ -29,21 +29,5 @@ lum.run();
 giros.print();
 // Serial.print(line.checkState(lum.memoria[lum.memoriaLastIdx]));
 // Serial.print(" -> ");
-// mostraOutputSensores();
-}
-
-
-void mostraOutputSensores()
-{
-Serial.print(" ");
-Serial.print(lum.processedRead(SensorForaEsq));
-Serial.print(" | ");
-Serial.print(lum.processedRead(SensorMeioEsq));
-Serial.print(" | ");
-Serial.print(lum.processedRead(SensorMeio));
-Serial.print(" | ");
-Serial.print(lum.processedRead(SensorMeioDir));
-Serial.print(" | ");
-Serial.print(lum.processedRead(SensorForaDir));
-Serial.println();
+// lum.mostraOutputSensores();
 }

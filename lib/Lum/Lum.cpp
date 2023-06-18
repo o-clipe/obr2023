@@ -34,6 +34,22 @@ void Lum::run() //  Roda comandos de rotina
 }
 
 
+void Lum::mostraOutputSensores()
+{
+Serial.print(" ");
+Serial.print(processedRead(_ee));
+Serial.print(" | ");
+Serial.print(processedRead(_e));
+Serial.print(" | ");
+Serial.print(processedRead(_m));
+Serial.print(" | ");
+Serial.print(processedRead(_d));
+Serial.print(" | ");
+Serial.print(processedRead(_dd));
+Serial.println();
+}
+
+
 uint16_t Lum::processedRead(uint8_t sens)
 {
   uint8_t sensores[5] = {_ee, _e, _m, _d, _dd};
