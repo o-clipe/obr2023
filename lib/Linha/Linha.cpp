@@ -3,11 +3,12 @@
 #include "Arduino.h"
 #include "Linha.h"
 #include "Lum.h"
+#include "Motor.h"
 
 
-Linha::Linha(Lum& lum_obj): _lum(lum_obj) // Constructor
+Linha::Linha(Lum& lum_obj, Motor& motor_obj): _lum(lum_obj), _carro(motor_obj) // Constructor
 {
-
+    status = "inicio";
 }
 
 
@@ -19,7 +20,7 @@ void Linha::setup() // Chamado no Setup()
 
 void Linha::run() // Comandos de rotina
 {
-  
+  rotinaBasica();
 }
 
 
@@ -33,11 +34,53 @@ String Linha::checkState(uint16_t sensorsPosition[5])
 
     Serial.print((String)ee + " " + (String)e + " " + (String)m + " " + (String)d + " " + (String)dd + ": ");
 
-    if (ee < e && e < m && m > d && d > dd){
-        return "default";
-    }
-    return "not";
+    if (ee < e && e < m && m > d && d > dd) return "default";
+    else if (e >= m && m > d && d >= dd) return "linha a esquerda";
+    else if (ee <= e && e < m && m <= d) return "linha a direita";
+    else if (ee == 0 && e == 0 && m == 0 && d == 0 && dd == 0) return "sem linha";
+    else if (ee > 0 && e > 0 && m > 0 && d > 0 && dd > 0) return "paralelo a linha";
+
+    return "F";
 }
+
+
+void Linha::pararSeOutroStatus(String f_status)
+{
+    if (f_status != status)
+    {
+        _carro.parar();
+    }
+}
+
+
+void Linha::rotinaBasica()
+{
+    String status = checkState(_lum.processedReadAll());
+    if (status == "default")
+    {
+        _carro.ligarReto();
+    }
+    if (status == "linha a esquerda")
+    {
+        pararSeOutroStatus("linha a esquerda");
+        _carro.ligarMotor("e", VELOCIDADEDECURVA);
+    }
+    if (status == "linha a direita")
+    {
+        pararSeOutroStatus("linha a direita");
+        _carro.ligarMotor("d", VELOCIDADEDECURVA);
+    }
+    if (status == "sem linha"){
+        _carro.parar();
+    }
+    else if (status == "paralelo a linha")
+    {
+        _carro.ligarRe();
+    }
+
+}
+
+
 
 
  

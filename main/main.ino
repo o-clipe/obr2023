@@ -4,21 +4,33 @@
 #define SensorMeio    A2
 #define SensorMeioDir A1
 #define SensorForaDir A0
+#define MotorDireito     2
+#define MotorEsquerdo    3
+#define MotorDireitoRe   4
+#define MotorEsquerdoRe  5
+#define EntradaEn1       6
+#define EntradaEn2       7
 
 #include <Lum.h>
 #include <Linha.h>
 #include <Giros.h>
+#include <Motor.h>
 
 
 Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
-Linha line(lum);
+Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
+Linha linha(lum, carro);
 Giros giros;
+
 
 
 void setup() 
 {
 lum.setup();
+linha.setup();
 giros.setup();
+carro.setup();
+
 Serial.begin(9600);
 }
 
@@ -26,8 +38,11 @@ Serial.begin(9600);
 void loop() 
 {
 lum.run();
-giros.print();
-// Serial.print(line.checkState(lum.memoria[lum.memoriaLastIdx]));
+linha.run();
+giros.run();
+carro.run();
+// giros.print();
+// Serial.print(linha.checkState(lum.memoria[lum.memoriaLastIdx]));
 // Serial.print(" -> ");
 // lum.mostraOutputSensores();
 }
