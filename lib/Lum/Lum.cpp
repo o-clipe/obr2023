@@ -99,6 +99,19 @@ uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
   return rtrn;
 }
 
+
+uint16_t* Lum::processedReadAll()
+{
+  _processedReadAllOutput[0] = processedRead(_ee);
+  _processedReadAllOutput[1] = processedRead(_e);
+  _processedReadAllOutput[2] = processedRead(_m);
+  _processedReadAllOutput[3] = processedRead(_d);
+  _processedReadAllOutput[4] = processedRead(_dd);
+
+  return _processedReadAllOutput;
+}
+
+
 void Lum::setMemoria()
 {
   uint16_t read = millis()%(MEMSIZE*MILLISTEP);
