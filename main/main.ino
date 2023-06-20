@@ -12,12 +12,19 @@
 #define EntradaEn1       6
 #define EntradaEn2       7
 
-#define ColorPinS0 8
-#define ColorPinS1 9
-#define ColorPinS2 10
-#define ColorPinS3 11
-#define ColorPinOut 12
-#define ColorPinLed 13
+#define EColorPinS0 8
+#define EColorPinS1 9
+#define EColorPinS2 10
+#define EColorPinS3 11
+#define EColorPinOut 12
+#define EColorPinLed 13
+
+#define DColorPinS0 8
+#define DColorPinS1 9
+#define DColorPinS2 10
+#define DColorPinS3 11
+#define DColorPinOut 12
+#define DColorPinLed 13
 
 #include <Lum.h>
 #include <Linha.h>
@@ -30,7 +37,8 @@
 
 Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
 Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
-Cor cor(ColorPinS0, ColorPinS1, ColorPinS2, ColorPinS3, ColorPinOut, ColorPinLed);
+Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
+Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
 Linha linha(lum, carro);
 Giros giros;
 
@@ -42,7 +50,8 @@ lum.setup();
 linha.setup();
 giros.setup();
 carro.setup();
-cor.setup();
+corE.setup();
+corD.setup();
 
 Serial.begin(9600);
 }
@@ -93,7 +102,8 @@ void calibrar()
     }
     if (countStart == 2)
     {
-        cor.defineLimiteBranco();
+        corE.defineLimiteBranco();
+        corD.defineLimiteBranco();
         countStart += 1;
         return;
     }
@@ -106,5 +116,6 @@ void rotina()
     linha.run();
     giros.run();
     carro.run();   
-    cor.run();
+    corE.run();
+    corD.run();
 }
