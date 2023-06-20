@@ -3,8 +3,6 @@
 #include "Arduino.h"
 #include "Lum.h"
 
-#define led LED_BUILTIN
-
 
 Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) //  Constructor
 {
@@ -22,15 +20,12 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) //  Constructo
 
 void Lum::setup() //  Chamado no Setup()
 {
-  pinMode(led, OUTPUT);
+
 }
 
 void Lum::run() //  Roda comandos de rotina
 {
   setMemoria();
-  if (_inicio > 0){
-    defineLimite();
-  }
 }
 
 
@@ -126,7 +121,7 @@ void Lum::setMemoria()
   memoriaLastIdx = idx;
 }
 
-void Lum::defineLimite(int checkLast = 0)
+bool Lum::defineLimite(int countStart, int checkLast = 0)
 {
   if (!checkLast)
   {
@@ -154,17 +149,15 @@ void Lum::defineLimite(int checkLast = 0)
       }
     }
 
-    _inicio += 1;
     for (int j=0; j < 5; j++)
     {
       if (max[j] - min[j] > 50 || min[0] == 0)
       {
-        _inicio -= 1;
-        passou = false;
-        break;
+        return false;
       }
     }
-    if (_inicio == 2 && passou)
+
+    if (countStart == 0)
     {
       Serial.println("1a cor guardada");
       for (int j=0; j < 5; j++)
@@ -178,17 +171,9 @@ void Lum::defineLimite(int checkLast = 0)
           memoria[mem][s] = 0;
         }
       }
-
-      for (int k=0; k < 20; k++) //  pisca o led 20x em 2 seg. Leu o branco!!!!
-      { 
-        digitalWrite(led, HIGH);
-        delay(50);
-        digitalWrite(led, LOW);
-        delay(50);
-      }
     }
       
-    if (_inicio == 3 && passou)
+    if (countStart == 1)
     {
       Serial.println("2a cor guardada");
       for (int j=0; j < 5; j++)
@@ -215,15 +200,8 @@ void Lum::defineLimite(int checkLast = 0)
         Serial.print(" com variacao original de ");
         Serial.println(_sensValueRange[j]);
       }
-      _inicio = 0;
 
-      for (int k=0; k < 30; k++) //  pisca o led 30x em 3 seg. Leu o preto e definiu o limite!!
-      { 
-        digitalWrite(led, HIGH);
-        delay(50);
-        digitalWrite(led, LOW);
-        delay(50);
-      }
+      return true;
     }
   }
 }

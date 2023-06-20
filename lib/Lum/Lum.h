@@ -17,7 +17,7 @@ class Lum{
     void setup();
     void run();
     void mostraOutputSensores();
-    void defineLimite(int checkLast=0);
+    bool defineLimite(int countStart, int checkLast=0);
     void setMemoria();
     uint16_t processedRead(uint8_t sens);
     uint16_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
