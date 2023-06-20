@@ -7,6 +7,10 @@
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
+#define MEMSIZE 10
+#define MILLISTEP 200
+#define FATORERROVARIACAO 1.5
+
 class Giros
 {
   public:
@@ -14,9 +18,17 @@ class Giros
     void setup();
     void run();
     void print();
+    float* girosRead();
+    void setMemoria();
+    void defineVariacaoPadrao();
+    bool detectaVariacao(char eixo);
+    float memoria[MEMSIZE][3];
+    uint8_t memoriaLastIdx;
     // MPU6050 mpu6050;
   private:
-    int _none;
+    uint8_t _traduzStrParaIdx(String& arg);
+    float _xyz[3];
+    float _variacaoPadrao[3];
 };
 
 #endif
