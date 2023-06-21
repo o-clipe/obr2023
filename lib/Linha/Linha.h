@@ -6,6 +6,7 @@
 #include "Arduino.h"
 #include "Lum.h"
 #include "Motor.h"
+#include "Giros.h"
 
 #define VELOCIDADEDECURVA 32
 
@@ -18,7 +19,7 @@ class Linha
     uint8_t checkState(uint16_t sensorsPosition[5]);
     void pararSeOutroStatus(uint8_t f_status);
     bool segueLinha();
-    bool girar90Graus(char l);
+    bool girar90Graus(char l=' ');
     bool paralelar();
     bool smoothCurve();
     bool trialAndErrorCurve();
@@ -44,6 +45,11 @@ class Linha
     bool _paralelarLoop=true;
     unsigned long _trialAndErrorTime=0;
     uint16_t _perfeitamenteNaLinha[5];
+    uint8_t _rotina = 0;
+    void* _rotinas[10];
+    bool _getRotina(uint8_t id);
+    char _girar90GrausLado = 'l';
+    uint8_t _trialAndErrorStage;
 };
 
 #endif

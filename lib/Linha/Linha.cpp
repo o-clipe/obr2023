@@ -6,8 +6,8 @@
 #include "Motor.h"
 #include "Giros.h"
 
-#define None 1
-#define Inicio 2
+#define None 0
+#define Inicio 1
 #define Padrao 10
 #define PerfeitamenteNaLinha 11
 #define LinhaaEsquerda 20
@@ -18,6 +18,13 @@
 #define SemiParaleloaLinha 50
 #define ParaleloaLinha 51
 
+#define None 0
+#define Girar90Graus 1
+#define Paralelar 2
+#define SmoothCurve 3
+#define TrialAndErrorCurve 4
+#define Micro 5
+#define Gap 6
 
 Linha::Linha(Lum& lum_obj, Motor& motor_obj, Giros& giros_obj): _lum(lum_obj), _carro(motor_obj), _giros(giros_obj) // Constructor
 {
@@ -28,6 +35,7 @@ Linha::Linha(Lum& lum_obj, Motor& motor_obj, Giros& giros_obj): _lum(lum_obj), _
     _paralelarBestAssigned = false;
     _paralelarLoop = true;
     _trialAndErrorTime = 0;
+    _rotina = None;
 }
 
 
@@ -45,15 +53,16 @@ void Linha::run() // Comandos de rotina
 
 uint8_t Linha::checkState(uint16_t sensorsPosition[5])
 {
-    uint16_t ee = _lum.normalizeSensEntry(0, sensorsPosition[0]);
-    uint16_t e = _lum.normalizeSensEntry(1, sensorsPosition[1]);
-    uint16_t m = _lum.normalizeSensEntry(2, sensorsPosition[2]);
-    uint16_t d = _lum.normalizeSensEntry(3, sensorsPosition[3]);
-    uint16_t dd = _lum.normalizeSensEntry(4, sensorsPosition[4]);
+    uint16_t ee = sensorsPosition[0];
+    uint16_t e = sensorsPosition[1];
+    uint16_t m = sensorsPosition[2];
+    uint16_t d = sensorsPosition[3];
+    uint16_t dd = sensorsPosition[4];
 
     Serial.print((String)ee + " " + (String)e + " " + (String)m + " " + (String)d + " " + (String)dd + ": ");
 
-    if (ee==_perfeitamenteNaLinha[0] && e==_perfeitamenteNaLinha[1] && m==_perfeitamenteNaLinha[2] && d==_perfeitamenteNaLinha[3] && d==_perfeitamenteNaLinha[4]) return PerfeitamenteNaLinha;
+    if (ee==_perfeitamenteNaLinha[0] && e==_perfeitamenteNaLinha[1] && m==_perfeitamenteNaLinha[2] && d==_perfeitamenteNaLinha[3] && d==_perfeitamenteNaLinha[4]) 
+        return PerfeitamenteNaLinha;
     if (ee < e && e < m && m > d && d > dd) return Padrao;
     if (e >= m && m > d && d >= dd) return LinhaaEsquerda;
     if (ee <= e && e < m && m <= d) return LinhaaDireita;
@@ -76,7 +85,18 @@ void Linha::pararSeOutroStatus(uint8_t f_status)
 
 bool Linha::segueLinha()
 {
-
+    uint8_t status = checkState(_lum.processedLastMem());
+    if (_rotina != 0)
+    {
+        if(!_getRotina(_rotina))
+        {
+            _rotina = 0;
+        }
+    }
+    else
+    {
+        _simples();
+    }
 }
 
 
@@ -105,10 +125,14 @@ bool Linha::_simples()
 }
 
 
-bool Linha::girar90Graus(char l)
+bool Linha::girar90Graus(char l = ' ')
 {
+    if (l != ' ')
+    {
+        _girar90GrausLado = l;
+    }
     char op;
-    if (l == 'e'){op='l';}else{op='e';}
+    if (_girar90GrausLado == 'e'){op='l';}else{op='e';}
 
     if (_boolLoop)
     {
@@ -116,7 +140,7 @@ bool Linha::girar90Graus(char l)
     _startGirosPos[0] = xyzRef[0];
     _startGirosPos[1] = xyzRef[1];
     _startGirosPos[2] = xyzRef[2];
-    _carro.ligarMotor((String)l+"r", VELOCIDADEDECURVA/2);
+    _carro.ligarMotor((String)_girar90GrausLado+"r", VELOCIDADEDECURVA/2);
     _carro.ligarMotor((String)op, VELOCIDADEDECURVA/2);
     _boolLoop = false;
     }
@@ -259,11 +283,23 @@ bool Linha::smoothCurve()
     uint8_t status = checkState(_lum.processedLastMem());
     if (status != Padrao)
     {
-        if (_boolLoop)
+            uint8_t status = checkState(_lum.processedLastMem());
+        if (status == Padrao)
         {
-            
+            _carro.ligarReto();
+        }
+        if (status == LinhaaEsquerda)
+        {
+            _carro.ligarMotor("e", VELOCIDADEDECURVA);
+            _carro.ligarMotor("d", VELOCIDADEDECURVA/4);
+        }
+        if (status == LinhaaDireita)
+        {
+            _carro.ligarMotor("d", VELOCIDADEDECURVA);
+            _carro.ligarMotor("e", VELOCIDADEDECURVA/4);
         }
     }
+    return false;
 }
 
 
@@ -278,19 +314,30 @@ bool Linha::trialAndErrorCurve()
     }
     if (status/10*10 == Padrao)
     {
-        _boolLoop=true;
+        _trialAndErrorStage = 0;
         return false;
     }
     _trialAndErrorTime = time;
-    if (_boolLoop)
+    if (_trialAndErrorStage == 0)
     {
-        _boolLoop = false;
+        _trialAndErrorStage = 1;
+        _carro.parar();
         return _simples();
+    }
+    else if (_trialAndErrorStage == 1)
+    {
+        _trialAndErrorStage = 2;
+        _carro.ligarReto();
+        return true;
     }
     else
     {
-        _boolLoop = true;
-        _carro.ligarRe(VELOCIDADEDECURVA);
+        _trialAndErrorStage = 0;
+        if (status/10*10 == Padrao)
+        {
+            return false;
+        }
+        _carro.ligarRe();
         return true;
     }
 
@@ -315,5 +362,28 @@ void Linha::definePerfeitamenteNaLinha()
     _perfeitamenteNaLinha[4] = r[4];
 }
 
-
+bool Linha::_getRotina(uint8_t id)
+{
+    switch(id)
+    {
+        case Girar90Graus:
+            return girar90Graus();
+            break;
+        case Paralelar:
+            return paralelar();
+            break;
+        case SmoothCurve:
+            return smoothCurve();
+            break;
+        case TrialAndErrorCurve:
+            return trialAndErrorCurve();
+            break;
+        case Micro:
+            return micro();
+            break;
+        case Gap:
+            return gap();
+            break;
+    }
+}
  
