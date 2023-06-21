@@ -37,10 +37,11 @@
 
 Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
 Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
+Giros giros;
 Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
 Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
-Linha linha(lum, carro);
-Giros giros;
+Linha linha(lum, carro, giros);
+
 
 int countStart = 0;
 
@@ -75,7 +76,7 @@ void calibrar()
         if (lum.defineLimite(c))
         {
             countStart += 1;
-            for (int k=0; k < 20; k++) //  pisca o LED 20x em 2 seg. Leu o branco!!!!
+            for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Leu o branco!!!!
             { 
                 digitalWrite(LED, HIGH);
                 delay(50);
@@ -90,7 +91,7 @@ void calibrar()
         if(lum.defineLimite(c))
         {
             countStart += 1;
-            for (int k=0; k < 20; k++) //  pisca o LED 20x em 2 seg. Leu o preto e definiu o limite!!
+            for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Leu o preto e definiu o limite!!
             { 
                 digitalWrite(LED, HIGH);
                 delay(50);
@@ -105,6 +106,26 @@ void calibrar()
         corE.defineLimiteBranco();
         corD.defineLimiteBranco();
         countStart += 1;
+        for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu limite dos sensores de cor.
+        { 
+            digitalWrite(LED, HIGH);
+            delay(50);
+            digitalWrite(LED, LOW);
+            delay(50);
+        }
+        return;
+    }
+    if (countStart == 3)
+    {
+        linha.definePerfeitamenteNaLinha();
+        countStart += 1;
+        for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu estado perfeitamente na linha.
+        { 
+            digitalWrite(LED, HIGH);
+            delay(50);
+            digitalWrite(LED, LOW);
+            delay(50);
+        }
         return;
     }
     countStart = -1;
