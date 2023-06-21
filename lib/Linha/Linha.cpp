@@ -6,25 +6,28 @@
 #include "Motor.h"
 #include "Giros.h"
 
-#define Padrao 0
 #define None 1
 #define Inicio 2
-#define LinhaaEsquerda 10
-#define NoventaEsquerda 11
-#define LinhaaDireita 20
-#define NoventaDireita 21
-#define SemLinha 30
-#define SemiParaleloaLinha 40
-#define ParaleloaLinha 41
+#define Padrao 10
+#define PerfeitamenteNaLinha 11
+#define LinhaaEsquerda 20
+#define NoventaEsquerda 21
+#define LinhaaDireita 30
+#define NoventaDireita 31
+#define SemLinha 40
+#define SemiParaleloaLinha 50
+#define ParaleloaLinha 51
 
 
 Linha::Linha(Lum& lum_obj, Motor& motor_obj, Giros& giros_obj): _lum(lum_obj), _carro(motor_obj), _giros(giros_obj) // Constructor
 {
     status = Inicio;
-    _loopBool = true;
+    _boolLoop = true;
     _paralelarBest = 0;
     _paralelarLadoDone = false;
     _paralelarBestAssigned = false;
+    _paralelarLoop = true;
+    _trialAndErrorTime = 0;
 }
 
 
@@ -50,6 +53,7 @@ uint8_t Linha::checkState(uint16_t sensorsPosition[5])
 
     Serial.print((String)ee + " " + (String)e + " " + (String)m + " " + (String)d + " " + (String)dd + ": ");
 
+    if (ee==_perfeitamenteNaLinha[0] && e==_perfeitamenteNaLinha[1] && m==_perfeitamenteNaLinha[2] && d==_perfeitamenteNaLinha[3] && d==_perfeitamenteNaLinha[4]) return PerfeitamenteNaLinha;
     if (ee < e && e < m && m > d && d > dd) return Padrao;
     if (e >= m && m > d && d >= dd) return LinhaaEsquerda;
     if (ee <= e && e < m && m <= d) return LinhaaDireita;
@@ -71,6 +75,12 @@ void Linha::pararSeOutroStatus(uint8_t f_status)
 
 
 bool Linha::segueLinha()
+{
+
+}
+
+
+bool Linha::_simples()
 {
     uint8_t status = checkState(_lum.processedLastMem());
     if (status == Padrao)
@@ -100,7 +110,7 @@ bool Linha::girar90Graus(char l)
     char op;
     if (l == 'e'){op='l';}else{op='e';}
 
-    if (_loopBool)
+    if (_boolLoop)
     {
     float* xyzRef = _giros.girosRead();
     _startGirosPos[0] = xyzRef[0];
@@ -108,7 +118,7 @@ bool Linha::girar90Graus(char l)
     _startGirosPos[2] = xyzRef[2];
     _carro.ligarMotor((String)l+"r", VELOCIDADEDECURVA/2);
     _carro.ligarMotor((String)op, VELOCIDADEDECURVA/2);
-    _loopBool = false;
+    _boolLoop = false;
     }
     else
     {
@@ -116,7 +126,7 @@ bool Linha::girar90Graus(char l)
         if (fmod((xyzRef[2]-90), 180) < _giros.variacaoPadrao[2]*1.5) // Possivel BUG, caso o robo gire muito rapido
         {
             _carro.parar();
-            _loopBool = true;
+            _boolLoop = true;
             return false;
         }
     }
@@ -127,18 +137,18 @@ bool Linha::girar90Graus(char l)
 bool Linha::paralelar()  // necessario espaco, bastante
 {
     uint8_t status = checkState(_lum.processedLastMem());
-    if (_loopBool)
+    if (_paralelarLoop)
     {
         _paralelarLadoDone = false;
-        if (status == LinhaaEsquerda)
+        if (status/10*10 == LinhaaEsquerda)
         {
             _paralelarLado = 'e';
         }
-        if (status == LinhaaDireita)
+        if (status/10*10 == LinhaaDireita)
         {
             _paralelarLado = 'd';
         }
-        _loopBool = false;
+        _paralelarLoop = false;
         return true;
     }
     // if (status == ParaleloaLinha)
@@ -156,7 +166,7 @@ bool Linha::paralelar()  // necessario espaco, bastante
             }
             _paralelarLadoDone = true;
         }
-        if (_paralelarLadoD()){return true;}else{_loopBool = true; return false;}
+        if (_paralelarLadoD()){return true;}else{if(girar90Graus('e')){return true;}else{_paralelarLoop=true;return false;};}
     }
     if (_paralelarLado == 'd')
     {
@@ -168,7 +178,7 @@ bool Linha::paralelar()  // necessario espaco, bastante
             }
             _paralelarLadoDone = true;
         }
-        if (_paralelarLadoE()){return true;}else{_loopBool = true; return false;} 
+        if (_paralelarLadoE()){return true;}else{if(girar90Graus('d')){return true;}else{_paralelarLoop=true;return false;};} 
     }
 }
 
@@ -202,12 +212,12 @@ bool Linha::_paralelarLadoD()
     if(_lum.processedlastMemOutput[4] < _paralelarBest)
     {
         _paralelarBest = _lum.processedlastMemOutput[0];
-        _carro.ligarMotor("d", VELOCIDADEDECURVA/2);
+        _carro.ligarMotor("d", VELOCIDADEDECURVA);
         return true;
     }
     if(_lum.processedlastMemOutput[4] > _paralelarBest)
     {
-        _carro.ligarMotor("dr", VELOCIDADEDECURVA/2);
+        _carro.ligarMotor("dr", VELOCIDADEDECURVA);
         _paralelarBestAssigned = true;
         return true;
     }
@@ -221,16 +231,69 @@ bool Linha::_paralelarLadoD()
 }
 
 
-bool Linha::alignInPlace()
+bool Linha::micro()
+{
+    uint8_t status = checkState(_lum.processedLastMem());
+    if (status == PerfeitamenteNaLinha)
+    {
+        _carro.parar();
+        return false;
+    }
+    _paralelarLadoDone = false;
+    if (status/10*10 == LinhaaEsquerda)
+    {
+    _carro.ligarMotor("er", VELOCIDADEDECURVA);
+    _carro.ligarMotor("d", VELOCIDADEDECURVA);
+    }
+    if (status/10*10 == LinhaaDireita)
+    {
+    _carro.ligarMotor("dr", VELOCIDADEDECURVA);
+    _carro.ligarMotor("e", VELOCIDADEDECURVA);
+    }
+    return true;
+}
+
+
+bool Linha::smoothCurve()
 {
     uint8_t status = checkState(_lum.processedLastMem());
     if (status != Padrao)
     {
-        if (_loopBool)
+        if (_boolLoop)
         {
             
         }
     }
+}
+
+
+bool Linha::trialAndErrorCurve()
+{
+    unsigned long time = millis();
+    uint8_t status = checkState(_lum.processedLastMem());
+
+    if (time/MILLISTEP == _trialAndErrorTime/MILLISTEP)
+    {
+        return true;  //Evitar isso pelo amor de Deus.
+    }
+    if (status/10*10 == Padrao)
+    {
+        _boolLoop=true;
+        return false;
+    }
+    _trialAndErrorTime = time;
+    if (_boolLoop)
+    {
+        _boolLoop = false;
+        return _simples();
+    }
+    else
+    {
+        _boolLoop = true;
+        _carro.ligarRe(VELOCIDADEDECURVA);
+        return true;
+    }
+
 }
 
 
@@ -240,6 +303,16 @@ bool Linha::gap()
     if (status == SemLinha){
         return true;
     }
+}
+
+void Linha::definePerfeitamenteNaLinha()
+{
+    uint16_t* r = _lum.processedReadAll();
+    _perfeitamenteNaLinha[0] = r[0];
+    _perfeitamenteNaLinha[1] = r[1];
+    _perfeitamenteNaLinha[2] = r[2];
+    _perfeitamenteNaLinha[3] = r[3];
+    _perfeitamenteNaLinha[4] = r[4];
 }
 
 

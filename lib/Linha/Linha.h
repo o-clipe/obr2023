@@ -7,7 +7,7 @@
 #include "Lum.h"
 #include "Motor.h"
 
-#define VELOCIDADEDECURVA 50
+#define VELOCIDADEDECURVA 32
 
 class Linha
 {
@@ -20,23 +20,30 @@ class Linha
     bool segueLinha();
     bool girar90Graus(char l);
     bool paralelar();
-    bool alignInPlace();
+    bool smoothCurve();
+    bool trialAndErrorCurve();
     bool gap();
+    bool micro();
 
+    void definePerfeitamenteNaLinha();
     bool _paralelarLadoE();
     bool _paralelarLadoD();
+    bool _simples();
 
     uint8_t status;
   private:
     Lum& _lum;
     Motor& _carro;
     Giros& _giros;
-    bool _loopBool=true;  // _loopBool é sempre, quando não está sendo usado, _true_. Ou seja, deve sempre existir antes de return false;
+    bool _boolLoop=true;  // _boolLoop é sempre, quando não está sendo usado, _true_. Ou seja, deve sempre existir antes de return false;
     float _startGirosPos[3];
     char _paralelarLado;
     bool _paralelarLadoDone=false;
     uint8_t _paralelarBest=0;
     bool _paralelarBestAssigned=false;
+    bool _paralelarLoop=true;
+    unsigned long _trialAndErrorTime=0;
+    uint16_t _perfeitamenteNaLinha[5];
 };
 
 #endif
