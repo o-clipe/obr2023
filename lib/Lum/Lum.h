@@ -17,28 +17,18 @@ class Lum{
     void setup();
     void run();
     void mostraOutputSensores();
-    bool defineLimite(int countStart, int checkLast=0);
-    void setMemoria();
     uint16_t processedRead(uint8_t sens);
     uint16_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
     uint16_t* processedReadAll();
-    uint16_t* processedLastMem();
-    uint16_t limite[5];
-    uint16_t memoria[MEMSIZE][5];
-    uint32_t memoriaLastIdx;
-    uint16_t _processedReadAllOutput[5];
-    uint16_t processedlastMemOutput[5];
   private:
     uint8_t _ee;
     uint8_t _e;
     uint8_t _m;
     uint8_t _d;
     uint8_t _dd;
-    bool _inicio=true;
     uint16_t _sensValueRange[5];
-    uint16_t _processedLastMemOutputread;
-    int _cor1[5];
-    int _cor2[5];
+    uint16_t _processedReadAllOutput[5];
+    uint16_t _limite[5];
 
 
 };
