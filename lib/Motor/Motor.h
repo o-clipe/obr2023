@@ -5,7 +5,7 @@
 
 #include "Arduino.h"
 
-#define DEFAULTVELOCITY 200 //  max 255
+#define DEFAULTVELOCITY 64 //  max 255
 
 class Motor
 {
