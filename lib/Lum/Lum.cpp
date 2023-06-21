@@ -107,6 +107,23 @@ uint16_t* Lum::processedReadAll()
 }
 
 
+uint16_t* Lum::processedLastMem()
+{
+  uint16_t read = millis()%(MEMSIZE*MILLISTEP);
+  if (_processedLastMemOutputread == read)
+  { 
+    return processedlastMemOutput;
+  }
+  _processedLastMemOutputread = read;
+  processedlastMemOutput[0] = normalizeSensEntry(0, memoria[memoriaLastIdx][0]);
+  processedlastMemOutput[1] = normalizeSensEntry(1, memoria[memoriaLastIdx][1]);
+  processedlastMemOutput[2] = normalizeSensEntry(2, memoria[memoriaLastIdx][2]);
+  processedlastMemOutput[3] = normalizeSensEntry(3, memoria[memoriaLastIdx][3]);
+  processedlastMemOutput[4] = normalizeSensEntry(4, memoria[memoriaLastIdx][4]);
+  return processedlastMemOutput;
+}
+
+
 void Lum::setMemoria()
 {
   uint16_t read = millis()%(MEMSIZE*MILLISTEP);
