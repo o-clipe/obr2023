@@ -27,7 +27,7 @@ class Giros
     float variacaoPadrao[3];
     // MPU6050 mpu6050;
   private:
-    uint8_t _traduzStrParaIdx(String& arg);
+    uint8_t _traduzCharParaIdx(char arg);
     float _xyz[3];
     
 };

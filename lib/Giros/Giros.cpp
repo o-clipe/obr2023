@@ -97,7 +97,7 @@ bool Giros::detectaVariacao(char eixo)
     return false;
 }
 
-uint8_t _traduzCharParaIdx(char arg)
+uint8_t Giros::_traduzCharParaIdx(char arg)
 {
     if (arg == 'x') return 0;
     if (arg == 'y') return 1;
