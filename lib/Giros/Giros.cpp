@@ -81,16 +81,16 @@ void Giros::defineVariacaoPadrao()
         }
     }
 
-    _variacaoPadrao[0] = max[0] - min[0];
-    _variacaoPadrao[1] = max[1] - min[1];
-    _variacaoPadrao[2] = max[2] - min[2];
+    variacaoPadrao[0] = max[0] - min[0];
+    variacaoPadrao[1] = max[1] - min[1];
+    variacaoPadrao[2] = max[2] - min[2];
 }
 
 bool Giros::detectaVariacao(char eixo)
 {
     uint8_t anterior = (memoriaLastIdx+MEMSIZE-1)%MEMSIZE;
     uint8_t e = _traduzCharParaIdx(eixo);
-    if (fabs(memoria[memoriaLastIdx][e] - memoria[anterior][e]) >= _variacaoPadrao[e]*FATORERROVARIACAO)
+    if (fabs(memoria[memoriaLastIdx][e] - memoria[anterior][e]) >= variacaoPadrao[e]*FATORERROVARIACAO)
     {
         return true;
     }

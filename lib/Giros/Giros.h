@@ -8,7 +8,7 @@
 #include <Wire.h>
 
 #define MEMSIZE 10
-#define MILLISTEP 200
+#define MILLISTEP 500
 #define FATORERROVARIACAO 1.5
 
 class Giros
@@ -24,11 +24,12 @@ class Giros
     bool detectaVariacao(char eixo);
     float memoria[MEMSIZE][3];
     uint8_t memoriaLastIdx;
+    float variacaoPadrao[3];
     // MPU6050 mpu6050;
   private:
     uint8_t _traduzStrParaIdx(String& arg);
     float _xyz[3];
-    float _variacaoPadrao[3];
+    
 };
 
 #endif
