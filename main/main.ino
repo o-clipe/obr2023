@@ -29,6 +29,8 @@
 #define DColorPinOut 0
 #define DColorPinLed 0 //sempre ligado
 
+// MAIS OS 2 CABOS DO GIROSCOPIO
+
 #include <Lum.h>
 #include <Linha.h>
 #include <Giros.h>
