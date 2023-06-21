@@ -24,6 +24,8 @@ void Motor::setup() // Chamado no Setup()
     pinMode(_esquerdoRe, OUTPUT);
     pinMode(_en1, OUTPUT);
     pinMode(_en2, OUTPUT);
+    analogWrite(_en1, DEFAULTVELOCITY);
+    analogWrite(_en2, DEFAULTVELOCITY);
 }
 
 
@@ -37,8 +39,8 @@ uint8_t Motor::_traduzStrParaPorta(String& arg)
 {
     if (arg == "d") return _direito;
     if (arg == "e") return _esquerdo;
-    if (arg == "er") return _direitoRe;
-    if (arg == "dr") return _esquerdoRe;
+    if (arg == "er") return _esquerdoRe;
+    if (arg == "dr") return _direitoRe;
     if (arg == "direito") return _direito;
     if (arg == "esquerdo") return _esquerdo;
     if (arg == "esquerdo_re") return _direitoRe;
@@ -51,8 +53,13 @@ void Motor::ligarMotor(String m, uint8_t vel=0)
 {
     if (vel != 0)
     {
-        analogWrite(_en1, vel);
-        analogWrite(_en2, vel);
+        analogWrite(_en1, (uint8_t)vel*VELESQUERDO);
+        analogWrite(_en2, (uint8_t)vel*VELDIREITO);
+    }
+    else
+    {
+        analogWrite(_en1, (uint8_t)velocidade*VELESQUERDO);
+        analogWrite(_en2, (uint8_t)velocidade*VELDIREITO);
     }
     digitalWrite(_traduzStrParaPorta(m), HIGH);
 }
@@ -87,3 +94,4 @@ void Motor::ligarRe(uint8_t vel=0)
     ligarMotor("dr", vel);
     ligarMotor("er", vel);
 }
+

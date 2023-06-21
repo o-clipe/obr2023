@@ -13,7 +13,7 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) //  Constructo
   _dd = dd;
 
   memoriaLastIdx = 0;
-  _inicio = (uint8_t)1;
+  _inicio = true;
 
 }
 
@@ -67,7 +67,7 @@ uint16_t Lum::processedRead(uint8_t sens)
 
 uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
 
-  if (_inicio > 0)
+  if (_inicio)
   {
     return entrada;
   }
@@ -144,7 +144,6 @@ bool Lum::defineLimite(int countStart, int checkLast = 0)
   {
     checkLast = READSECATSTART*1000/MILLISTEP; //  checa ultimos READSECATSTART seg
   }
-  bool passou = true;
   if (millis() > READSECATSTART*1000)
   {
     int max[5] = {0, 0, 0, 0, 0};
@@ -188,6 +187,7 @@ bool Lum::defineLimite(int countStart, int checkLast = 0)
           memoria[mem][s] = 0;
         }
       }
+      return true;
     }
       
     if (countStart == 1)
@@ -217,7 +217,7 @@ bool Lum::defineLimite(int countStart, int checkLast = 0)
         Serial.print(" com variacao original de ");
         Serial.println(_sensValueRange[j]);
       }
-
+      _inicio = false;
       return true;
     }
   }

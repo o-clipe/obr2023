@@ -8,7 +8,7 @@
 #include "Motor.h"
 #include "Giros.h"
 
-#define VELOCIDADEDECURVA 32
+#define VELOCIDADEDECURVA 96
 
 class Linha
 {

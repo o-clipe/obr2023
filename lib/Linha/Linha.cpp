@@ -63,9 +63,9 @@ uint8_t Linha::checkState(uint16_t sensorsPosition[5])
 
     if (ee==_perfeitamenteNaLinha[0] && e==_perfeitamenteNaLinha[1] && m==_perfeitamenteNaLinha[2] && d==_perfeitamenteNaLinha[3] && d==_perfeitamenteNaLinha[4]) 
         return PerfeitamenteNaLinha;
-    if (ee < e && e < m && m > d && d > dd) return Padrao;
-    if (e >= m && m > d && d >= dd) return LinhaaEsquerda;
-    if (ee <= e && e < m && m <= d) return LinhaaDireita;
+    if (ee <= e && e <= m && m >= d && d >= dd) return Padrao;
+    if (e >= m && m >= d) return LinhaaEsquerda;
+    if (e <= m && m <= d) return LinhaaDireita;
     if (ee == 0 && e == 0 && m == 0 && d == 0 && dd == 0) return SemLinha;
     if (ee > OUTPUTRANGE/10 && e > OUTPUTRANGE/10 && m > OUTPUTRANGE/10 && d > OUTPUTRANGE/10 && dd > OUTPUTRANGE/10) return ParaleloaLinha;
     if (ee > 0 && e > 0 && m > 0 && d > 0 && dd > 0) return SemiParaleloaLinha;
@@ -103,19 +103,19 @@ bool Linha::segueLinha()
 bool Linha::_simples()
 {
     uint8_t status = checkState(_lum.processedLastMem());
-    if (status == Padrao)
+    if (status/10*10 == Padrao)
     {
         _carro.ligarReto();
     }
-    if (status == LinhaaEsquerda)
+    else if (status/10*10 == LinhaaEsquerda)
     {
         pararSeOutroStatus(LinhaaEsquerda);
-        _carro.ligarMotor("e", VELOCIDADEDECURVA);
+        _carro.ligarMotor("d", VELOCIDADEDECURVA);
     }
-    if (status == LinhaaDireita)
+    else if (status/10*10 == LinhaaDireita)
     {
         pararSeOutroStatus(LinhaaDireita);
-        _carro.ligarMotor("d", VELOCIDADEDECURVA);
+        _carro.ligarMotor("e", VELOCIDADEDECURVA);
     }
     else
     {
@@ -140,8 +140,8 @@ bool Linha::girar90Graus(char l = ' ')
     _startGirosPos[0] = xyzRef[0];
     _startGirosPos[1] = xyzRef[1];
     _startGirosPos[2] = xyzRef[2];
-    _carro.ligarMotor((String)_girar90GrausLado+"r", VELOCIDADEDECURVA/2);
-    _carro.ligarMotor((String)op, VELOCIDADEDECURVA/2);
+    _carro.ligarMotor((String)_girar90GrausLado+"r", VELOCIDADEDECURVA);
+    _carro.ligarMotor((String)op, VELOCIDADEDECURVA);
     _boolLoop = false;
     }
     else
@@ -212,12 +212,12 @@ bool Linha::_paralelarLadoE()
     if(_lum.processedlastMemOutput[0] > _paralelarBest)
     {
         _paralelarBest = _lum.processedlastMemOutput[0];
-        _carro.ligarMotor("e", VELOCIDADEDECURVA/2);
+        _carro.ligarMotor("e", VELOCIDADEDECURVA);
         return true;
     }
     if(_lum.processedlastMemOutput[0] < _paralelarBest)
     {
-        _carro.ligarMotor("er", VELOCIDADEDECURVA/2);
+        _carro.ligarMotor("er", VELOCIDADEDECURVA);
         _paralelarBestAssigned = true;
         return true;
     }

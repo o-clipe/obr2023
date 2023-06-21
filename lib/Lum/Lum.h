@@ -4,7 +4,7 @@
 #define Lum_h
 
 
-#define OUTPUTRANGE 20
+#define OUTPUTRANGE 10
 #define MEMSIZE 200
 #define MILLISTEP 100
 #define READSECATSTART 3
@@ -34,7 +34,7 @@ class Lum{
     uint8_t _m;
     uint8_t _d;
     uint8_t _dd;
-    uint8_t _inicio;
+    bool _inicio=true;
     uint16_t _sensValueRange[5];
     uint16_t _processedLastMemOutputread;
     int _cor1[5];
