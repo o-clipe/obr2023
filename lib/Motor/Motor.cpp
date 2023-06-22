@@ -3,16 +3,23 @@
 #include "Arduino.h"
 #include "Motor.h"
 
+#define VELOCIDADE 96  //max 255
+#define VELDIREITO 1.2
+#define VELESQUERDO 1.0
 
-Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t en1, uint8_t en2) // Constructor
+Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t enEsquerdo, uint8_t enDireito) // Constructor
 {
     _direito = direito;
     _esquerdo = esquerdo;
     _direitoRe = direitoRe;
     _esquerdoRe = esquerdoRe;
-    _en1 = en1;
-    _en2 = en2;
-    velocidade = DEFAULTVELOCITY;
+    _enEsquerdo = enEsquerdo;
+    _enDireito = enDireito;
+    velocidade = VELOCIDADE;
+    #define d _direito
+    #define e _esquerdo
+    #define er _direitoRe
+    #define dr _esquerdoRe
 }
 
 
@@ -22,76 +29,54 @@ void Motor::setup() // Chamado no Setup()
     pinMode(_esquerdo, OUTPUT);
     pinMode(_direitoRe, OUTPUT);
     pinMode(_esquerdoRe, OUTPUT);
-    pinMode(_en1, OUTPUT);
-    pinMode(_en2, OUTPUT);
-    analogWrite(_en1, DEFAULTVELOCITY);
-    analogWrite(_en2, DEFAULTVELOCITY);
+    pinMode(_enEsquerdo, OUTPUT);
+    pinMode(_enDireito, OUTPUT);
 }
 
 
-void Motor::run() // Comandos de rotina
-{
- 
-}
-
-
-uint8_t Motor::_traduzStrParaPorta(String& arg)
-{
-    if (arg == "d") return _direito;
-    if (arg == "e") return _esquerdo;
-    if (arg == "er") return _esquerdoRe;
-    if (arg == "dr") return _direitoRe;
-    if (arg == "direito") return _direito;
-    if (arg == "esquerdo") return _esquerdo;
-    if (arg == "esquerdo_re") return _direitoRe;
-    if (arg == "direito_re") return _esquerdoRe;
-
-}
-
-
-void Motor::ligarMotor(String m, uint8_t vel=0)
+void Motor::ligarMotor(uint8_t motor, uint8_t vel=0)
 {
     if (vel != 0)
     {
-        analogWrite(_en1, (uint8_t)vel*VELESQUERDO);
-        analogWrite(_en2, (uint8_t)vel*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)vel*VELESQUERDO);
+        analogWrite(_enDireito, (uint8_t)vel*VELDIREITO);
     }
     else
     {
-        analogWrite(_en1, (uint8_t)velocidade*VELESQUERDO);
-        analogWrite(_en2, (uint8_t)velocidade*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)velocidade*VELESQUERDO);
+        analogWrite(_enDireito, (uint8_t)velocidade*VELDIREITO);
     }
-    digitalWrite(_traduzStrParaPorta(m), HIGH);
+    digitalWrite(motor, HIGH);
 }
 
 
-void Motor::desligarMotor(String m)
+void Motor::desligarMotor(uint8_t motor)
 {
-    digitalWrite(_traduzStrParaPorta(m), LOW);
+    digitalWrite(motor, LOW);
 }
 
 
 void Motor::parar()
 {
-    desligarMotor("d");
-    desligarMotor("e");
-    desligarMotor("dr");
-    desligarMotor("er");
+    desligarMotor(d);
+    desligarMotor(e);
+    desligarMotor(dr);
+    desligarMotor(er);
 }
 
 void Motor::ligarReto(uint8_t vel=0)
 {
-    desligarMotor("dr");
-    desligarMotor("er");
-    ligarMotor("d", vel);
-    ligarMotor("e", vel);
+    desligarMotor(dr);
+    desligarMotor(er);
+    ligarMotor(d, vel);
+    ligarMotor(e, vel);
 }
 
 void Motor::ligarRe(uint8_t vel=0)
 {
-    desligarMotor("d");
-    desligarMotor("e");
-    ligarMotor("dr", vel);
-    ligarMotor("er", vel);
+    desligarMotor(d);
+    desligarMotor(e);
+    ligarMotor(dr, vel);
+    ligarMotor(er, vel);
 }
 

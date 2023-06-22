@@ -5,31 +5,26 @@
 
 #include "Arduino.h"
 
-#define DEFAULTVELOCITY 96  //max 255
-#define VELDIREITO 1.2
-#define VELESQUERDO 1.0
-
 class Motor
 {
   public:
-    Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t en1, uint8_t en2);
+    Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t velocidadeEsquerdo, uint8_t velocidadeDireito);
     void setup();
-    void run();
-    void ligarMotor(String motor, uint8_t vel=0);
-    void desligarMotor(String motor);
+    void ligarMotor(uint8_t motor, uint8_t vel=0);
+    void desligarMotor(uint8_t motor);
     void parar();
     void ligarReto(uint8_t vel=0);
     void ligarRe(uint8_t vel=0);
     uint8_t velocidade;
-
-  private:
-    uint8_t _traduzStrParaPorta(String& arg);
     uint8_t _direito;
     uint8_t _esquerdo;
     uint8_t _direitoRe;
     uint8_t _esquerdoRe;
-    uint8_t _en1;
-    uint8_t _en2;
+
+  private:
+
+    uint8_t _enEsquerdo;
+    uint8_t _enDireito;
 };
 
 #endif
