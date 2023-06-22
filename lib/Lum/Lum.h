@@ -5,9 +5,6 @@
 
 
 #define OUTPUTRANGE 10
-#define MEMSIZE 200
-#define MILLISTEP 100
-#define READSECATSTART 3
 
 #include "Arduino.h"
 
