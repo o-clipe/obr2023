@@ -27,7 +27,11 @@ Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t le
     _s3 = s3;
     _out = out;
     _led = led;
+    #define r 0
+    #define g 1
+    #define b 2
 }
+
 
 void Cor::setup() // Chamado no Setup()
 {
@@ -43,10 +47,6 @@ void Cor::setup() // Chamado no Setup()
   digitalWrite(_led, HIGH);
 }
 
-void Cor::run() // Comandos de rotina
-{
- 
-}
 
 uint8_t* Cor::rgbaRead()
 {
@@ -64,11 +64,11 @@ uint8_t* Cor::rgbaRead()
     _rgba[3] = pulseIn(_out, LOW);
 }
 
-char Cor::rgbaToChar(uint8_t* rgba)
+uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
 {
-    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return 'r';
-    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return 'g';
-    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return 'b';
+    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return r;
+    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return g;
+    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return b;
 }
 
 void Cor::defineLimiteBranco()
