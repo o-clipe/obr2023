@@ -6,19 +6,13 @@
 #include "Motor.h"
 #include "Giros.h"
 
-#define DELAYPOS 50
-#define DELAYROT 50
-
-#define Left 0
-#define Middle 1
-#define Right 2
-
+#define Meio 0
+#define Both 0
+#define Esquerda 1
+#define Direita 2
 
 Linha::Linha(Lum& lum_obj, Motor& motor_obj, Giros& giros_obj): _lum(lum_obj), _carro(motor_obj), _giros(giros_obj) // Constructor
 {
-  uint8_t ideal[5] = {0, 2, 5, 2, 0}; // Calibrar isso idealmente na hora
-  int goodAlignment = 5;
-  int goodSymmetry = 5;
   #define md _carro._direito
   #define me _carro._esquerdo
   #define mdr _carro._direitoRe
@@ -34,112 +28,110 @@ void Linha::setup() // Chamado no Setup()
 
 bool Linha::segueLinha()
 {
-  uint8_t *status = _lum.processedReadAll();
-  uint8_t& ee = status[0];
-  uint8_t& e = status[1];
-  uint8_t& m = status[2];
-  uint8_t& d = status[3];
-  uint8_t& dd = status[4];
-  int symmetryScore = (abs(((int)dd-ee))+1)*(abs(((int)d-e))+1) - 1;
-  int alignmentScore = abs(((int)ideal[0]-dd)) + abs(((int)ideal[1]-d)) +
-  abs(((int)ideal[2]-m)) + abs(((int)ideal[3]-ee)) + abs(((int)ideal[4]-ee));
-  currentState = getState(status);
-
-  if (symmetryScore <= goodSymmetry && alignmentScore <= goodAlignment)
-  {
-    lastStateIsCurrent = false;
-    lastState = Middle;
-    pos();
-  } 
-  else if (symmetryScore > goodSymmetry)
-  {
-    if (!lastStateIsCurrent)
-    {
-      lastState = currentState;
-      lastStateIsCurrent = true;
-    }
-    
-    testCurve(symmetryScore);
-  }
-  else if (alignmentScore > goodAlignment) // symmetry is good, alignment is bad
-  {
-    inPlace(alignmentScore); // Contar quantas vezes é chamado pq ele vai ativar num GAP
-  }
+  bool *status = _lum.processedReadAll();
+  bool& ee = status[0];
+  bool& e = status[1];
+  bool& d = status[2];
+  bool& dd = status[3];
+  bool& te = status[4];
+  bool& td = status[5];
   
+  // Triggers
+  
+  if (dd && ee) {
+    _lastOutSeen = Both;
+  } else if (dd) {
+    _lastOutSeen = Direita;
+  } else if (ee) {
+    _lastOutSeen = Esquerda;
+  }
+
+  if (e)
+  {
+    rturn();
+  }
+  else if(d)
+  {
+    lturn();
+  }
+  else if(!e && !d)
+  {
+    if (te && td)
+    {
+      
+    }
+    _carro.ligarRe();
+  }
+  else
+  {
+    pos();
+  }
 }
 
-void Linha::pos(uint16_t delay_=DELAYPOS)
+
+
+
+
+
+
+// Unidades Mínimas de Movimento
+
+void Linha::pos(uint16_t time_)  // Avança para frente
 {
   _carro.ligarReto();
-  delay(delay_);
+  delay(time_);
   _carro.parar();
-  delay(5);
+  delay(DELAY);
 }
 
-void Linha::npos(uint16_t delay_=DELAYPOS)
+void Linha::npos(uint16_t time_)  // Volta em ré
 {
   _carro.ligarRe();
-  delay(delay_);
+  delay(time_);
   _carro.parar();
-  delay(5);
+  delay(DELAY);
 }
 
-void Linha::rot(uint16_t delay_=DELAYROT)
+void Linha::rot(uint16_t time_)  // Rotaciona do sentido horario
 {
-  _carro.ligarMotor(me);
-  _carro.ligarMotor(mdr);
-  delay(delay_);
-  _carro.parar();
-  delay(5);
+  float yawAtStart = _giros.girosRead()[YAW];
+  
+  while (fabs(_giros.girosRead()[YAW]-yawAtStart < 90.))
+  {
+    _carro.ligarMotor(me);
+    _carro.ligarMotor(mdr);
+    delay(DELAYROT);
+    _carro.parar();
+    delay(DELAY);
+  }
 }
 
-void Linha::nrot(uint16_t delay_=DELAYROT)
+void Linha::nrot(uint16_t time_)  // Rotaciona do sentido antihorario
+{
+  float yawAtStart = _giros.girosRead()[YAW];
+  
+  while (fabs(_giros.girosRead()[YAW]-yawAtStart < 90.))
+  {
+    _carro.ligarMotor(md);
+    _carro.ligarMotor(mer);
+    delay(DELAYROT);
+    _carro.parar();
+    delay(DELAY);
+  }
+}
+
+void Linha::rturn(uint16_t time_)  // Vira pra direita
 {
   _carro.ligarMotor(mer);
-  _carro.ligarMotor(md);
-  delay(delay_);
+  delay(time_);
   _carro.parar();
-  delay(5);
+  delay(DELAY);
 }
 
-uint8_t Linha::getState(uint8_t* state)
+void Linha::lturn(uint16_t time_)  // vira pra esquerda
 {
-  if (state[1] < state[2] && state[2] > state[3]) return Middle;
-  if (state[1] > state[2]) return Left;
-  if (state[3] > state[2]) return Right;
-  if (state[3] < state[2]) return Left;
-  if (state[1] < state[2]) return Right;
-  
-}
-
-void Linha::inPlace(int alignmentScore)
-{
-  if (lastState == Right)
-  {
-    rot();
-  }
-  if (lastState == Left)
-  {
-    nrot();
-  }
-  if (lastState == Middle) // Here comes complexity
-  {
-
-  }
-}
-
-void Linha::testCurve(int symmetryScore)
-{
-  if (lastState == Right)
-  {
-    npos();
-    rot();
-    pos();
-  }
-  if (lastState == Left)
-  {
-    npos();
-    nrot();
-    pos();
-  }
+    _carro.ligarMotor(mdr);
+  delay(time_);
+  _carro.parar();
+  delay(DELAY);
 }
