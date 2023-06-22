@@ -13,8 +13,8 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) //  Constructo
   _m = m;
   _d = d;
   _dd = dd;
-  uint8_t _limite[5] = {0, 1, 2, 3, 4};  //Limite deve ser colocado manualmente. Valor do sensor no branco.
-  uint8_t _sensValueRange[5] = {0, 1, 2, 3, 4}; // ValueRange também
+  uint8_t _limite[5] = {429, 255, 237, 344, 544};  //Limite deve ser colocado manualmente. Valor do sensor no branco.
+  uint8_t _sensValueRange[5] = {709-429, 647-255, 633-237, 659-344, 761-544}; // ValueRange também
 }
 
 
