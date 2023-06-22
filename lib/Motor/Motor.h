@@ -5,6 +5,7 @@
 
 #include "Arduino.h"
 
+#define VELOCIDADE_CURVA 64
 #define VELOCIDADE 96  //max 255
 #define VELOCIDADE_DIREITO 1.2
 #define VELOCIDADE_ESQUERDO 1.0
