@@ -1,11 +1,7 @@
-/* Biblioteca Template - Codigo*/
+/* Motor - Codigo*/
 
 #include "Arduino.h"
 #include "Motor.h"
-
-#define VELOCIDADE 96  //max 255
-#define VELDIREITO 1.2
-#define VELESQUERDO 1.0
 
 Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t enEsquerdo, uint8_t enDireito) // Constructor
 {
@@ -15,7 +11,6 @@ Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esque
     _esquerdoRe = esquerdoRe;
     _enEsquerdo = enEsquerdo;
     _enDireito = enDireito;
-    velocidade = VELOCIDADE;
     #define md _direito
     #define me _esquerdo
     #define mdr _direitoRe
@@ -34,17 +29,17 @@ void Motor::setup() // Chamado no Setup()
 }
 
 
-void Motor::ligarMotor(uint8_t motor, uint8_t vel=0)
+void Motor::ligarMotor(uint8_t motor, uint8_t vel)
 {
-    if (vel != 0)
+    if (vel)
     {
-        analogWrite(_enEsquerdo, (uint8_t)vel*VELESQUERDO);
-        analogWrite(_enDireito, (uint8_t)vel*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)vel*VELOCIDADE_ESQUERDO);
+        analogWrite(_enDireito, (uint8_t)vel*VELOCIDADE_DIREITO);
     }
     else
     {
-        analogWrite(_enEsquerdo, (uint8_t)velocidade*VELESQUERDO);
-        analogWrite(_enDireito, (uint8_t)velocidade*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)VELOCIDADE*VELOCIDADE_ESQUERDO);
+        analogWrite(_enDireito, (uint8_t)VELOCIDADE*VELOCIDADE_DIREITO);
     }
     digitalWrite(motor, HIGH);
 }
@@ -64,7 +59,7 @@ void Motor::parar()
     desligarMotor(mer);
 }
 
-void Motor::ligarReto(uint8_t vel=0)
+void Motor::ligarReto(uint8_t vel)
 {
     desligarMotor(mdr);
     desligarMotor(mer);
@@ -72,7 +67,7 @@ void Motor::ligarReto(uint8_t vel=0)
     ligarMotor(me, vel);
 }
 
-void Motor::ligarRe(uint8_t vel=0)
+void Motor::ligarRe(uint8_t vel)
 {
     desligarMotor(md);
     desligarMotor(me);
