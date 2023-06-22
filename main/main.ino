@@ -66,12 +66,7 @@ Serial.begin(9600);
 
 void loop() 
 {
-carro.ligarReto();
-delay(1000);
-carro.parar();
-carro.ligarRe();
-delay(1000);
-carro.parar();
+linha.segueLinha();
 if (count != -1){calibrar();}
 
 }
