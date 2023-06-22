@@ -37,7 +37,7 @@
 #include <Motor.h>
 #include <Cor.h>
 
-#define c countStart
+#define count countStart
 
 
 Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
@@ -66,94 +66,29 @@ Serial.begin(9600);
 
 void loop() 
 {
-lum.run();
 lum.mostraOutputSensores();
-Serial.println(c);
-if (c != -1) 
-{
-    calibrar();
-}
-else
-{
-
-if(!linha.paralelar())
-{
-    carro.ligarRe();
-}
-
-}
+Serial.println(count);
+if (count != -1){calibrar();}
 
 }
 
 
 void calibrar()
 {
+    // AQUI VC APERTA UM BOTÃO
     if (countStart == 0)
     {
-        if (lum.defineLimite(c))
-        {
-            countStart = 1;
-            for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Leu o branco!!!!
-            { 
-                digitalWrite(LED, HIGH);
-                delay(50);
-                digitalWrite(LED, LOW);
-                delay(50);
-            }
+        corE.defineLimiteBranco();
+        corD.defineLimiteBranco();
+        countStart += 1;
+        for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu limite dos sensores de cor.
+        { 
+            digitalWrite(LED, HIGH);
+            delay(50);
+            digitalWrite(LED, LOW);
+            delay(50);
         }
         return;
     }
-    if (countStart == 1)
-    {
-        if(lum.defineLimite(c))
-        {
-            countStart = 2;
-            for (int k=0; k < 50; k++) //  pisca o LED 20x em 5 seg. Leu o preto e definiu o limite!!
-            { 
-                digitalWrite(LED, HIGH);
-                delay(50);
-                digitalWrite(LED, LOW);
-                delay(50);
-            }
-        }
-        return;
-    }
-    // if (countStart == 2)
-    // {
-    //     corE.defineLimiteBranco();
-    //     corD.defineLimiteBranco();
-    //     countStart += 1;
-    //     for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu limite dos sensores de cor.
-    //     { 
-    //         digitalWrite(LED, HIGH);
-    //         delay(50);
-    //         digitalWrite(LED, LOW);
-    //         delay(50);
-    //     }
-    //     return;
-    // }
-    // if (countStart == 3)
-    // {
-    //     linha.definePerfeitamenteNaLinha();
-    //     countStart += 1;
-    //     for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu estado perfeitamente na linha.
-    //     { 
-    //         digitalWrite(LED, HIGH);
-    //         delay(50);
-    //         digitalWrite(LED, LOW);
-    //         delay(50);
-    //     }
-    //     return;
-    // }
     countStart = -1;
-}
-
-void rotina()
-{
-    lum.run();
-    linha.run();
-    giros.run();
-    carro.run();   
-    corE.run();
-    corD.run();
-}
+}  
