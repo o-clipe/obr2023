@@ -16,10 +16,10 @@ Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esque
     _enEsquerdo = enEsquerdo;
     _enDireito = enDireito;
     velocidade = VELOCIDADE;
-    #define d _direito
-    #define e _esquerdo
-    #define er _direitoRe
-    #define dr _esquerdoRe
+    #define md _direito
+    #define me _esquerdo
+    #define mdr _direitoRe
+    #define mer _esquerdoRe
 }
 
 
@@ -58,25 +58,25 @@ void Motor::desligarMotor(uint8_t motor)
 
 void Motor::parar()
 {
-    desligarMotor(d);
-    desligarMotor(e);
-    desligarMotor(dr);
-    desligarMotor(er);
+    desligarMotor(md);
+    desligarMotor(me);
+    desligarMotor(mdr);
+    desligarMotor(mer);
 }
 
 void Motor::ligarReto(uint8_t vel=0)
 {
-    desligarMotor(dr);
-    desligarMotor(er);
-    ligarMotor(d, vel);
-    ligarMotor(e, vel);
+    desligarMotor(mdr);
+    desligarMotor(mer);
+    ligarMotor(md, vel);
+    ligarMotor(me, vel);
 }
 
 void Motor::ligarRe(uint8_t vel=0)
 {
-    desligarMotor(d);
-    desligarMotor(e);
-    ligarMotor(dr, vel);
-    ligarMotor(er, vel);
+    desligarMotor(md);
+    desligarMotor(me);
+    ligarMotor(mdr, vel);
+    ligarMotor(mer, vel);
 }
 
