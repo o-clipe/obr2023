@@ -1,27 +1,38 @@
-/*Biblioteca Template - Header*/
+/*Cor - Header*/
 
 #ifndef Cor_h
 #define Cor_h
 
 #include "Arduino.h"
 
+#define LIMITE_BRANCO 100
+
+#define None 0
+#define R 1
+#define G 2
+#define B 3
+
+
 class Cor
 {
   public:
     Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t led);
-    void setup();
-    uint8_t* rgbaRead();
-    uint8_t rgbaToColorInt(uint8_t* rgba);
-    void defineLimiteBranco();
-    uint8_t _rgba[4];
+    void setup();  // Pra rodar no setup()
+    uint8_t* rgbaRead();  // Le sensor e retorna array sendo [red, green, blue, all]
+    uint8_t rgbaToColorInt(uint8_t* rgba);  // Calcula cor mais visível e retorna código entre R G B.
+    uint8_t colorRead();  // Le sensor e retorna o código da cor mais visível.
+
+
+
+  // Uso interno // *********************
   private:
+    uint8_t _rgba[4];
     uint8_t _s0;
     uint8_t _s1;
     uint8_t _s2;
     uint8_t _s3;
     uint8_t _out;
     uint8_t _led;
-    uint8_t _limiteBranco;
 };
 
 #endif

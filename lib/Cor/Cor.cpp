@@ -1,23 +1,8 @@
-/* Biblioteca Template - Codigo*/
+/* Cor - Codigo*/
 
 #include "Arduino.h"
 #include "Cor.h"
 
-/*
-    Photodiode colors
-         S2   S3
-   RED   LOW  LOW
-   BLUE  LOW  HIGH
-   NONE  HIGH LOW
-   GREEN HIGH HIGH
-
-    Frequency scaling
-         S0   S1
-   0     LOW  LOW
-   2%    LOW  HIGH
-   20%   HIGH LOW  <- Mais Comum
-   100%  HIGH HIGH
-*/
 
 Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t led) // Constructor
 {
@@ -27,9 +12,6 @@ Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t le
     _s3 = s3;
     _out = out;
     _led = led;
-    #define r 0
-    #define g 1
-    #define b 2
 }
 
 
@@ -66,12 +48,31 @@ uint8_t* Cor::rgbaRead()
 
 uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
 {
-    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return r;
-    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return g;
-    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return b;
+    if (rgba[3] < LIMITE_BRANCO) return None;
+    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return R;
+    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return G;
+    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return B;
 }
 
-void Cor::defineLimiteBranco()
+
+uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
 {
-    _limiteBranco = (rgbaRead())[3];
+    return rgbaToColorInt(rgbaRead());
 }
+
+
+/*
+    Photodiode colors
+         S2   S3
+   RED   LOW  LOW
+   BLUE  LOW  HIGH
+   NONE  HIGH LOW
+   GREEN HIGH HIGH
+
+    Frequency scaling
+         S0   S1
+   0     LOW  LOW
+   2%    LOW  HIGH
+   20%   HIGH LOW  <- Mais Comum
+   100%  HIGH HIGH
+*/
