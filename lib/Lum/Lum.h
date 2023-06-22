@@ -17,9 +17,9 @@ class Lum{
     void setup();
     void run();
     void mostraOutputSensores();
-    uint16_t processedRead(uint8_t sens);
-    uint16_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
-    uint16_t* processedReadAll();
+    uint8_t processedRead(uint8_t sens);
+    uint8_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
+    uint8_t* processedReadAll();
   private:
     uint8_t _ee;
     uint8_t _e;
@@ -27,7 +27,7 @@ class Lum{
     uint8_t _d;
     uint8_t _dd;
     uint16_t _sensValueRange[5];
-    uint16_t _processedReadAllOutput[5];
+    uint8_t _processedReadAllOutput[5];
     uint16_t _limite[5];
 
 

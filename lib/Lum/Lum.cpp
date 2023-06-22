@@ -13,8 +13,8 @@ Lum::Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd) //  Constructo
   _m = m;
   _d = d;
   _dd = dd;
-  uint8_t _limite[5] = {429, 255, 237, 344, 544};  //Limite deve ser colocado manualmente. Valor do sensor no branco.
-  uint8_t _sensValueRange[5] = {709-429, 647-255, 633-237, 659-344, 761-544}; // ValueRange também
+  uint16_t _limite[5] = {429, 255, 237, 344, 544};  //Limite deve ser colocado manualmente. Valor do sensor no branco.
+  uint16_t _sensValueRange[5] = {709-429, 647-255, 633-237, 659-344, 761-544}; // ValueRange também
 }
 
 
@@ -40,7 +40,7 @@ Serial.println();
 }
 
 
-uint16_t Lum::processedRead(uint8_t sens)
+uint8_t Lum::processedRead(uint8_t sens)
 {
   uint8_t sensores[5] = {_ee, _e, _m, _d, _dd};
   int idx = -1;
@@ -55,7 +55,7 @@ uint16_t Lum::processedRead(uint8_t sens)
   return normalizeSensEntry(idx, analogRead(sens));
 }
 
-uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
+uint8_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
 
   uint8_t idx = idxSensor;
   float limiteSens = (float)_limite[idx];
@@ -63,7 +63,7 @@ uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
   float range = (float)_sensValueRange[idx];
   float b = (float)OUTPUTRANGE;
   float normalizado = (read - limiteSens)/ range * b;
-  uint16_t rtrn = normalizado;
+  uint8_t rtrn = normalizado;
   if (rtrn > OUTPUTRANGE && rtrn < OUTPUTRANGE*2)
   {
     rtrn = OUTPUTRANGE;
@@ -76,7 +76,7 @@ uint16_t Lum::normalizeSensEntry(uint8_t idxSensor, uint16_t entrada){
 }
 
 
-uint16_t* Lum::processedReadAll()
+uint8_t* Lum::processedReadAll()
 {
   _processedReadAllOutput[0] = processedRead(_ee);
   _processedReadAllOutput[1] = processedRead(_e);
