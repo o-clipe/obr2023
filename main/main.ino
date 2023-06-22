@@ -66,20 +66,12 @@ Serial.begin(9600);
 
 void loop() 
 {
-Serial.print(" ");
-Serial.print(analogRead(SensorForaEsq));
-Serial.print(" | ");
-Serial.print(analogRead(SensorMeioEsq));
-Serial.print(" | ");
-Serial.print(analogRead(SensorMeio));
-Serial.print(" | ");
-Serial.print(analogRead(SensorMeioDir));
-Serial.print(" | ");
-Serial.print(analogRead(SensorForaDir));
-Serial.println();
-
-// lum.mostraOutputSensores();
-Serial.println(count);
+carro.ligarReto();
+delay(1000);
+carro.parar();
+carro.ligarRe();
+delay(1000);
+carro.parar();
 if (count != -1){calibrar();}
 
 }
