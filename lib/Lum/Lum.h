@@ -3,29 +3,38 @@
 #ifndef Lum_h
 #define Lum_h
 
-
-#define OUTPUTRANGE 10
-
 #include "Arduino.h"
+
+#define LIMITE_EE 9
+#define LIMITE_E 0 
+#define LIMITE_D 9
+#define LIMITE_DD 8
+#define LIMITE_TE 7 
+#define LIMITE_TD 8
 
 class Lum{
   public:
-    Lum(uint8_t ee, uint8_t e, uint8_t m, uint8_t d, uint8_t dd);
-    void setup();
-    void run();
-    void mostraOutputSensores();
-    uint8_t processedRead(uint8_t sens);
-    uint8_t normalizeSensEntry(uint8_t idxSensor, uint16_t entrada);
-    uint8_t* processedReadAll();
+    Lum(uint8_t ee, uint8_t e, uint8_t d, uint8_t dd, uint8_t te, uint8_t td);
+    void setup();  // Pra rodar no setup()
+    void processedPrint();  // printa no Serial os valores sendo 0 ou 1
+    void unprocessedPrint();  // printa no Serial os valores analogicos crus
+    bool* processedReadAll();  // retorna o valor processado boolean dos sensores
+
+
+
+    // Uso interno // *********************
+    bool processedRead(uint8_t sens);
+    bool normalizeSensEntry(uint8_t idxSensor, uint16_t entradaAnalog);
+    
   private:
     uint8_t _ee;
     uint8_t _e;
-    uint8_t _m;
     uint8_t _d;
     uint8_t _dd;
-    uint16_t _sensValueRange[5];
-    uint8_t _processedReadAllOutput[5];
-    uint16_t _limite[5];
+    uint8_t _te;
+    uint8_t _td;
+    bool _processedReadAllOutput[6];
+    uint16_t _limite[6];
 
 
 };
