@@ -1,18 +1,20 @@
 #define LED LED_BUILTIN
 
-#define SensorForaEsq A4
-#define SensorMeioEsq A3
-#define SensorMeio    A2
-#define SensorMeioDir A1
-#define SensorForaDir A0
+#define SensorForaEsq A0
+#define SensorEsq A1
+#define SensorDir A2
+#define SensorForaDir A3
+#define SensorTrasEsq A4
+#define SensorTrasDir A5
 
-#define EntradaEn1       3
-#define MotorEsquerdo    39
-#define MotorEsquerdoRe  38
+#define EntradaEn1       4
+#define MotorEsquerdo    7
+#define MotorEsquerdoRe  6
 
-#define EntradaEn2       4
-#define MotorDireito     41
-#define MotorDireitoRe   40
+#define EntradaEn2       5
+#define MotorDireito     9
+#define MotorDireitoRe   8
+
 
 
 #define EColorPinS0 0
@@ -40,15 +42,16 @@
 #define count countStart
 
 
-Lum lum(SensorForaEsq, SensorMeioEsq, SensorMeio, SensorMeioDir, SensorForaDir);
+Lum lum(SensorForaEsq, SensorEsq, SensorDir, SensorForaDir, SensorTrasEsq, SensorTrasDir);
 Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
 Giros giros;
-Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
-Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
+// Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
+// Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
 Linha linha(lum, carro, giros);
 
 
 int countStart = 0;
+
 
 void setup() 
 {
@@ -57,8 +60,8 @@ lum.setup();
 linha.setup();
 giros.setup();
 carro.setup();
-corE.setup();
-corD.setup();
+// corE.setup();
+// corD.setup();
 
 Serial.begin(9600);
 }
@@ -66,28 +69,44 @@ Serial.begin(9600);
 
 void loop() 
 {
+// Serial.print(" ");
+// Serial.print(analogRead(SensorForaEsq));
+// Serial.print(" | ");
+// Serial.print(analogRead(SensorEsq));
+// Serial.print(" | ");
+// Serial.print(analogRead(SensorDir));
+// Serial.print(" | ");
+// Serial.print(analogRead(SensorForaDir));
+// Serial.print(" | ");
+// Serial.print(analogRead(SensorTrasEsq));
+// Serial.print(" | ");
+// Serial.print(analogRead(SensorTrasDir));
+// Serial.println();
+lum.mostraOutputSensores();
+
 linha.segueLinha();
-if (count != -1){calibrar();}
+
+// if (count != -1){calibrar();}
 
 }
 
 
-void calibrar()
-{
-    // AQUI VC APERTA UM BOTÃO
-    if (countStart == 0)
-    {
-        corE.defineLimiteBranco();
-        corD.defineLimiteBranco();
-        countStart += 1;
-        for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu limite dos sensores de cor.
-        { 
-            digitalWrite(LED, HIGH);
-            delay(50);
-            digitalWrite(LED, LOW);
-            delay(50);
-        }
-        return;
-    }
-    countStart = -1;
-}  
+// void calibrar()
+// {
+//     // AQUI VC APERTA UM BOTÃO
+//     if (countStart == 0)
+//     {
+//         corE.defineLimiteBranco();
+//         corD.defineLimiteBranco();
+//         countStart += 1;
+//         for (int k=0; k < 20; k++) //  pisca o LED 20x em 5 seg. Definiu limite dos sensores de cor.
+//         { 
+//             digitalWrite(LED, HIGH);
+//             delay(50);
+//             digitalWrite(LED, LOW);
+//             delay(50);
+//         }
+//         return;
+//     }
+//     countStart = -1;
+// }  

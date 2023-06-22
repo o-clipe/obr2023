@@ -14,7 +14,6 @@ class Giros
     void setup();
     void print();
     float* girosRead();
-    void setMemoria();
   private:
     float _xyz[3];
     

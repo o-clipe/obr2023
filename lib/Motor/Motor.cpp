@@ -3,9 +3,9 @@
 #include "Arduino.h"
 #include "Motor.h"
 
-#define VELOCIDADE 96  //max 255
-#define VELDIREITO 1.2
-#define VELESQUERDO 1.0
+#define VELOCIDADE 64  //max 255
+#define VELDIREITO 1.0
+#define VELESQUERDO 1.2
 
 Motor::Motor(uint8_t direito, uint8_t esquerdo, uint8_t direitoRe, uint8_t esquerdoRe, uint8_t enEsquerdo, uint8_t enDireito) // Constructor
 {
@@ -38,13 +38,13 @@ void Motor::ligarMotor(uint8_t motor, uint8_t vel=0)
 {
     if (vel != 0)
     {
-        analogWrite(_enEsquerdo, (uint8_t)vel*VELESQUERDO);
-        analogWrite(_enDireito, (uint8_t)vel*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)(vel*VELESQUERDO));
+        analogWrite(_enDireito, (uint8_t)(vel*VELDIREITO));
     }
     else
     {
-        analogWrite(_enEsquerdo, (uint8_t)velocidade*VELESQUERDO);
-        analogWrite(_enDireito, (uint8_t)velocidade*VELDIREITO);
+        analogWrite(_enEsquerdo, (uint8_t)(velocidade*VELESQUERDO));
+        analogWrite(_enDireito, (uint8_t)(velocidade*VELDIREITO));
     }
     digitalWrite(motor, HIGH);
 }
