@@ -66,7 +66,19 @@ Serial.begin(9600);
 
 void loop() 
 {
-lum.mostraOutputSensores();
+Serial.print(" ");
+Serial.print(analogRead(SensorForaEsq));
+Serial.print(" | ");
+Serial.print(analogRead(SensorMeioEsq));
+Serial.print(" | ");
+Serial.print(analogRead(SensorMeio));
+Serial.print(" | ");
+Serial.print(analogRead(SensorMeioDir));
+Serial.print(" | ");
+Serial.print(analogRead(SensorForaDir));
+Serial.println();
+
+// lum.mostraOutputSensores();
 Serial.println(count);
 if (count != -1){calibrar();}
 
