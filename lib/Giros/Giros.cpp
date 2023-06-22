@@ -9,9 +9,7 @@ MPU6050 mpu6050(Wire);
 
 Giros::Giros() // Constructor
 {
-    // #define x 0
-    // #define y 1
-    // #define z 2
+
 }
 
 
@@ -22,14 +20,14 @@ void Giros::setup() // Chamado no Setup()
     mpu6050.calcGyroOffsets(true);
 }
 
-void Giros::print() //
+void Giros::print() 
 {
     mpu6050.update();
-    Serial.print("posX: ");
+    Serial.print(" PITCH: ");
     Serial.print(mpu6050.getAngleX());
-    Serial.print(" posY: ");
+    Serial.print(" YAW: ");
     Serial.print(mpu6050.getAngleY());
-    Serial.print(" posZ: ");
+    Serial.print(" ROLL: ");
     Serial.println(mpu6050.getAngleZ());
 }
 
