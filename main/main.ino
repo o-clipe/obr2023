@@ -68,6 +68,8 @@ Serial.begin(9600);
 void loop() 
 {
 lum.unprocessedPrint();
+carro.ligarReto();
+
 // giros.print();
 // corE.printRaw();
 // corD.printRaw();
