@@ -55,7 +55,7 @@ uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
 }
 
 
-uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
+uint8_t Cor::colorRead()
 {
     return rgbaToColorInt(rgbaRead());
 }
