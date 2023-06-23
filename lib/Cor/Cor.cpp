@@ -49,9 +49,9 @@ uint8_t* Cor::rgbaRead()
 uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
 {
     if (rgba[3] < LIMITE_BRANCO) return None;
-    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return R;
-    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return G;
-    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return B;
+    if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return Red;
+    if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return Green;
+    if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return Blue;
 }
 
 
