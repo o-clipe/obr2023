@@ -6,7 +6,7 @@
 #include "Motor.h"
 #include "Giros.h"
 
-#define Meio 0
+#define None 0
 #define Both 0
 #define Esquerda 1
 #define Direita 2
@@ -28,6 +28,7 @@ void Linha::setup() // Chamado no Setup()
 
 bool Linha::segueLinha()
 {
+  step += 1;
   bool *status = _lum.processedReadAll();
   bool& ee = status[0];
   bool& e = status[1];
@@ -37,35 +38,45 @@ bool Linha::segueLinha()
   bool& td = status[5];
   
   // Triggers
-  
+
+
   if (dd && ee) {
     _lastOutSeen = Both;
-  } else if (dd) {
+    encruzilhadaStep = step;
+  } else if (dd && step - encruzilhadaStep > 10) {
+    coolDownStep = step;
     _lastOutSeen = Direita;
-  } else if (ee) {
+  } else if (ee && step - encruzilhadaStep > 10) {
+    coolDownStep = step;
     _lastOutSeen = Esquerda;
+  } else {
+    if (step - coolDownStep > 100) {
+      _lastOutSeen = None;
+    }
   }
 
-  if (e)
-  {
-    rturn();
-  }
-  else if(d)
-  {
-    lturn();
-  }
-  else if(!e && !d)
-  {
-    if (te && td)
-    {
-      
-    }
-    _carro.ligarRe();
-  }
-  else
-  {
+  if (e && d){
     pos();
+  } else if (e) {
+    rturn();
+  } else if (d) {
+    lturn();
+  } else {  // !e && !d
+    if (!te && !td && _lastOutSeen) 
+    {
+      npos();
+      if(_lastOutSeen == Direita){
+        rot();
+      } else if (_lastOutSeen == Esquerda) {
+        nrot();
+      }
+    }
+    else 
+    {
+      pos();
+    }
   }
+
 }
 
 

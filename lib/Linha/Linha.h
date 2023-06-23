@@ -31,6 +31,17 @@ class Linha
     void rturn(uint16_t time_=DELAYTURN);
     void lturn(uint16_t time_=DELAYTURN);
 
+    // Triggers
+    bool $ColorTrigger;
+    bool $ObstaculoTrigger;
+    bool $SubidaTrigger;
+    bool $RampaDeResgateTrigger;
+
+    // Steps
+    unsigned int step=0;
+    unsigned int encruzilhadaStep=0;
+    unsigned int coolDownStep=0;
+
     // Objetos
   private:
     Lum& _lum;
