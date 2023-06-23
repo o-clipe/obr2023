@@ -8,12 +8,12 @@
 #define SensorTrasDir A5
 
 #define EntradaEn1       4  // ********** Motor Esquerdo
-#define MotorEsquerdo    7
-#define MotorEsquerdoRe  6
+#define MotorEsquerdo    6
+#define MotorEsquerdoRe  7
 
 #define EntradaEn2       5  // *********** Motor Direito
-#define MotorDireito     9
-#define MotorDireitoRe   8
+#define MotorDireito     8
+#define MotorDireitoRe   9
 
 #define EColorPinS0 0  // ******* Sensor de Cor Esquerdo
 #define EColorPinS1 0
