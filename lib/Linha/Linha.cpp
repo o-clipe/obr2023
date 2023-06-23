@@ -13,7 +13,7 @@
 #define Direita 2
 
 Linha::Linha(Lum& lum_obj, Motor& motor_obj, Giros& giros_obj, 
-    Cor& corE_obj, Cor& corD_obj):  // Constructor
+    Cor& corE_obj, Cor& corD_obj):                               // Constructor
 
 _lum(lum_obj), _carro(motor_obj), _giros(giros_obj), 
 _corE(corE_obj), _corD(corD_obj) 
@@ -31,7 +31,8 @@ void Linha::setup() // Chamado no Setup()
 }
 
 
-bool Linha::segueLinha()
+// Segue a Linha
+void Linha::segueLinha()
 {
   step += 1;
   bool *status = _lum.processedReadAll();
@@ -43,7 +44,7 @@ bool Linha::segueLinha()
   bool& td = status[5];
   
   // Triggers
-  if (ColorTrigger)
+  if (colorTrigger)                              
   {
     if(_corE.colorRead() == Green){
       _lastOutSeen = Esquerda;
@@ -55,18 +56,18 @@ bool Linha::segueLinha()
     }
   }
 
-  if (dd && ee) {
+  if (dd && ee) {                                 // Manipula _lastOutSeen e colorTrigger
     _lastOutSeen = Both;
     encruzilhadaStep = step;
-    ColorTrigger = true;
+    colorTrigger = true;
   } else if (dd && step - encruzilhadaStep > 10) {
     lastOutStep = step;
     _lastOutSeen = Direita;
-    ColorTrigger = false;
+    colorTrigger = false;
   } else if (ee && step - encruzilhadaStep > 10) {
     lastOutStep = step;
     _lastOutSeen = Esquerda;
-    ColorTrigger = false;
+    colorTrigger = false;
   } else {
     if (step - lastOutStep > 100) {
       _lastOutSeen = None;
@@ -75,24 +76,24 @@ bool Linha::segueLinha()
 
 
   // Movimentação
-  if (e && d){
-    pos();
-  } else if (e) {
-    rturn();
-  } else if (d) {
+  if (e && d){                                    // Se as dois sensores da frente virem ao mesmo tempo, da um pulo pra frente
+    pos(DELAYPOS*1.5);
+  } else if (e) {                                 // Se o sensor da esquerda disparou, vira pra direita
     lturn();
-  } else {  // !e && !d
-    if (te && td && _lastOutSeen) 
-    {
-      npos();
+  } else if (d) {                                 // Se o sensor da direita disparou, vira pra esquerda
+    rturn();
+  } else {  // !e && !d                           // Se não tem mais informação dos sensores da frente
+    if (te && td && _lastOutSeen) {                   //  Se os sensores de tras ambos disparam - Rotaciona 90 graus caso _lastOutSeen tenha valor de lado.       
       if(_lastOutSeen == Direita){
         rot();
       } else if (_lastOutSeen == Esquerda) {
         nrot();
       }
-    }
-    else 
-    {
+    } else if (te && _lastOutSeen == Esquerda) {      // Se o sensor tras esquerda dispara e _lastOutSeen era esquerda, Rotaciona -90 graus.
+      nrot();
+    } else if (td && _lastOutSeen == Direita) {       // Se o sensor tras direita dispara e _lastOutSeen era direita, Rotaciona 90 graus.
+      rot();
+    } else {                                          // Se não tem sinal para curva fechada (_lastOutSeen = 0), segue reto.
       pos();
     }
   }
