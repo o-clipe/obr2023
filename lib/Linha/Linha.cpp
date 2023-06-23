@@ -43,7 +43,7 @@ bool Linha::segueLinha()
   bool& td = status[5];
   
   // Triggers
-  if ($ColorTrigger)
+  if (ColorTrigger)
   {
     if(_corE.colorRead() == Green){
       _lastOutSeen = Esquerda;
@@ -58,15 +58,15 @@ bool Linha::segueLinha()
   if (dd && ee) {
     _lastOutSeen = Both;
     encruzilhadaStep = step;
-    $ColorTrigger = true;
+    ColorTrigger = true;
   } else if (dd && step - encruzilhadaStep > 10) {
     lastOutStep = step;
     _lastOutSeen = Direita;
-    $ColorTrigger = false;
+    ColorTrigger = false;
   } else if (ee && step - encruzilhadaStep > 10) {
     lastOutStep = step;
     _lastOutSeen = Esquerda;
-    $ColorTrigger = false;
+    ColorTrigger = false;
   } else {
     if (step - lastOutStep > 100) {
       _lastOutSeen = None;

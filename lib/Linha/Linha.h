@@ -25,10 +25,10 @@ class Linha
     uint8_t _lastOutSeen = 0;  // Entre dd, ee, dd && ee, qual foi o último visto. Direciona rots (rotacionações em 90 graus)
 
     // Triggers -- Ifs que mudam a rotina padrão do segueLinha
-    bool $ColorTrigger=false;
-    bool $ObstaculoTrigger=false;
-    bool $SubidaTrigger=false;
-    bool $RampaDeResgateTrigger=false;
+    bool ColorTrigger=false;
+    bool ObstaculoTrigger=false;
+    bool SubidaTrigger=false;
+    bool RampaDeResgateTrigger=false;
 
     // Steps -- O cálculo de tempo / progresso.
     unsigned int step=0; // step de agora. É atualizado a cada ciclo.
