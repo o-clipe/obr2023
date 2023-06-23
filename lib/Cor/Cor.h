@@ -21,7 +21,7 @@ class Cor
     uint8_t* rgbaRead();  // Le sensor e retorna array sendo [red, green, blue, all]
     uint8_t rgbaToColorInt(uint8_t* rgba);  // Calcula cor mais visível e retorna código entre Red Green Blue.
     uint8_t colorRead();  // Le sensor e retorna o código da cor mais visível.
-
+    void printRaw();  // Mostra valor dos sensores.
 
 
   // Uso interno // *********************

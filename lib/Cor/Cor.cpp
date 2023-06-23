@@ -44,6 +44,8 @@ uint8_t* Cor::rgbaRead()
 
     pinMode(_s2, HIGH);
     _rgba[3] = pulseIn(_out, LOW);
+
+    return _rgba;
 }
 
 uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
@@ -60,6 +62,19 @@ uint8_t Cor::colorRead()
     return rgbaToColorInt(rgbaRead());
 }
 
+void Cor::printRaw()
+{
+    uint8_t* rgba = rgbaRead();
+
+    Serial.print(" RED: ");
+    Serial.print(rgba[0]);
+    Serial.print(" GREEN: ");
+    Serial.print(rgba[1]);
+    Serial.print(" BLUE: ");
+    Serial.print(rgba[2]);
+    Serial.print(" BRANCO: ");
+    Serial.println(rgba[3]);
+}
 
 /*
     Photodiode colors
