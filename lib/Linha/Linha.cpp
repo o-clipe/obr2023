@@ -126,8 +126,9 @@ void Linha::npos(uint16_t time_)  // Volta em ré
 void Linha::rot(uint16_t time_)  // Rotaciona do sentido horario
 {
   float yawAtStart = _giros.girosRead()[YAW];
+
   
-  while (fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360) < 90.)
+  while (fmin(fmod(fabs(360+_giros.girosRead()[YAW]-yawAtStart), 360), fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360)) < 90.)
   {
     _carro.ligarMotor(me);
     _carro.ligarMotor(mdr);
@@ -141,7 +142,7 @@ void Linha::nrot(uint16_t time_)  // Rotaciona do sentido antihorario
 {
   float yawAtStart = _giros.girosRead()[YAW];
   
-  while (fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360) < 90.)
+  while (fmin(fmod(fabs(360+_giros.girosRead()[YAW]-yawAtStart), 360), fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360)) < 90.)
   {
     _carro.ligarMotor(md);
     _carro.ligarMotor(mer);
