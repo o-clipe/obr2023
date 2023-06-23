@@ -45,7 +45,7 @@ Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, Entrad
 Giros giros;
 Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
 Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
-Linha linha(lum, carro, giros);
+Linha linha(lum, carro, giros, corE, corD);
 
 
 
