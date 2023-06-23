@@ -74,6 +74,7 @@ bool Linha::segueLinha()
   }
 
 
+  // Movimentação
   if (e && d){
     pos();
   } else if (e) {
@@ -126,11 +127,11 @@ void Linha::rot(uint16_t time_)  // Rotaciona do sentido horario
 {
   float yawAtStart = _giros.girosRead()[YAW];
   
-  while (fmod(fabs(_giros.girosRead()[YAW]+180-yawAtStart), 180) < 90.)
+  while (fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360) < 90.)
   {
     _carro.ligarMotor(me);
     _carro.ligarMotor(mdr);
-    delay(DELAYROT);
+    delay(time_);
     _carro.parar();
     delay(DELAY);
   }
@@ -140,11 +141,11 @@ void Linha::nrot(uint16_t time_)  // Rotaciona do sentido antihorario
 {
   float yawAtStart = _giros.girosRead()[YAW];
   
-  while (fmod(fabs(_giros.girosRead()[YAW]+180-yawAtStart), 180) < 90.)
+  while (fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360) < 90.)
   {
     _carro.ligarMotor(md);
     _carro.ligarMotor(mer);
-    delay(DELAYROT);
+    delay(time_);
     _carro.parar();
     delay(DELAY);
   }
@@ -160,7 +161,7 @@ void Linha::rturn(uint16_t time_)  // Vira pra direita
 
 void Linha::lturn(uint16_t time_)  // vira pra esquerda
 {
-    _carro.ligarMotor(md);
+  _carro.ligarMotor(md);
   delay(time_);
   _carro.parar();
   delay(DELAY);
