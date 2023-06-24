@@ -18,11 +18,7 @@ class Giros
     Giros();
     void setup();  // Chmados no setup
     void print();  // Printa pos
-    float* girosRead();  // Le giroscopio e retorna array com valores dos angulos PITCH ROLL YAW
-
-  private:
-    float _xyz[3];
-    
+    float Giros::girosRead(int option);  // Le giroscopio e retorna valor de PITCH YAW ou ROLL 
 };
 
 #endif

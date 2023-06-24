@@ -26,16 +26,22 @@ void Giros::print()
     Serial.print(" PITCH: ");
     Serial.print(mpu6050.getAngleX());
     Serial.print(" YAW: ");
-    Serial.print(mpu6050.getAngleY());
+    Serial.print(mpu6050.getAngleZ());
     Serial.print(" ROLL: ");
-    Serial.println(mpu6050.getAngleZ());
+    Serial.print(mpu6050.getAngleY());
 }
 
 
-float* Giros::girosRead()
+float Giros::girosRead(int option)
 {
-    _xyz[0] = mpu6050.getAngleX();
-    _xyz[1] = mpu6050.getAngleY();
-    _xyz[2] = mpu6050.getAngleZ();
-    return _xyz;
+    mpu6050.update();
+    switch(option){
+        case PITCH:
+            return mpu6050.getAngleX();
+        case YAW:
+            return mpu6050.getAngleZ();
+        case ROLL:
+            return mpu6050.getAngleY();
+    }
+
 }

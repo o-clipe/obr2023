@@ -4,7 +4,7 @@
 #include "Cor.h"
 
 
-Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t led) // Constructor
+Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t led, long limiteBranco) // Constructor
 {
     _s0 = s0;
     _s1 = s1;
@@ -12,6 +12,7 @@ Cor::Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t le
     _s3 = s3;
     _out = out;
     _led = led;
+    _limiteBranco = limiteBranco;
 }
 
 
@@ -26,31 +27,30 @@ void Cor::setup() // Chamado no Setup()
 
   digitalWrite(_s0, HIGH);
   digitalWrite(_s1, LOW);
-  digitalWrite(_led, HIGH);
 }
 
 
-uint8_t* Cor::rgbaRead()
+long* Cor::rgbaRead()
 {
     pinMode(_s2, HIGH);
     pinMode(_s3, HIGH);
-    _rgba[1] = pulseIn(_out, LOW);   
+    _rgba[1] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);   
 
     pinMode(_s2, LOW);
-    _rgba[2] = pulseIn(_out, LOW);
+    _rgba[2] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
 
     pinMode(_s3, LOW);
-    _rgba[0] = pulseIn(_out, LOW);
+    _rgba[0] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
 
     pinMode(_s2, HIGH);
-    _rgba[3] = pulseIn(_out, LOW);
+    _rgba[3] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
 
     return _rgba;
 }
 
-uint8_t Cor::rgbaToColorInt(uint8_t* rgba)
+uint8_t Cor::rgbaToColorInt(long* rgba)
 {
-    if (rgba[3] < LIMITE_BRANCO) return None;
+    if (rgba[3] < _limiteBranco) return None;
     if (rgba[0] < rgba[1] && rgba[0] < rgba[2]) return Red;
     if (rgba[1] < rgba[0] && rgba[1] < rgba[2]) return Green;
     if (rgba[2] < rgba[0] && rgba[2] < rgba[1]) return Blue;
@@ -64,7 +64,7 @@ uint8_t Cor::colorRead()
 
 void Cor::printRaw()
 {
-    uint8_t* rgba = rgbaRead();
+    long* rgba = rgbaRead();
 
     Serial.print(" RED: ");
     Serial.print(rgba[0]);
@@ -73,9 +73,16 @@ void Cor::printRaw()
     Serial.print(" BLUE: ");
     Serial.print(rgba[2]);
     Serial.print(" BRANCO: ");
-    Serial.println(rgba[3]);
+    Serial.print(rgba[3]);
 }
 
+void Cor::ledOn(){
+    digitalWrite(_led, HIGH);
+}
+
+void Cor::ledOff(){
+    digitalWrite(_led, LOW);
+}
 /*
     Photodiode colors
          S2   S3

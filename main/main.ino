@@ -15,19 +15,19 @@
 #define MotorDireito     8
 #define MotorDireitoRe   9
 
-#define EColorPinS0 0  // ******* Sensor de Cor Esquerdo
-#define EColorPinS1 0
-#define EColorPinS2 0
-#define EColorPinS3 0
-#define EColorPinOut 0
-#define EColorPinLed 0
+#define EColorPinS0 26  // ******* Sensor de Cor Esquerdo
+#define EColorPinS1 27
+#define EColorPinS2 28
+#define EColorPinS3 29
+#define EColorPinOut 33
+#define EColorPinLed 31
 
-#define DColorPinS0 0   // ******* Sensor de Cor Direito
-#define DColorPinS1 0
-#define DColorPinS2 0
-#define DColorPinS3 0
-#define DColorPinOut 0
-#define DColorPinLed 0 
+#define DColorPinS0 22   // ******* Sensor de Cor Direito
+#define DColorPinS1 23
+#define DColorPinS2 24
+#define DColorPinS3 25
+#define DColorPinOut 32
+#define DColorPinLed 30
 
 // MAIS OS 2 CABOS DO GIROSCOPIO
 
@@ -37,14 +37,15 @@
 #include <Motor.h>
 #include <Cor.h>
 
-#define count countStart
+#define LIMITE_BRANCO_E 1000
+#define LIMITE_BRANCO_D 100
 
 
 Lum lum(SensorForaEsq, SensorEsq, SensorDir, SensorForaDir, SensorTrasEsq, SensorTrasDir);
 Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
 Giros giros;
-Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed);
-Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed);
+Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed, LIMITE_BRANCO_E);
+Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed, LIMITE_BRANCO_D);
 Linha linha(lum, carro, giros, corE, corD);
 
 
@@ -61,18 +62,39 @@ corE.setup();
 corD.setup();
 
 pinMode(LED, OUTPUT);
-Serial.begin(9600);
+Serial.begin(115200);
 }
 
 
 void loop() 
 {
 lum.unprocessedPrint();
-carro.ligarReto();
+lum.processedPrint();
+Serial.println();
 
-// giros.print();
+
+// for (int i=0; i < 13; i++)
+// {
+// linha.pos();
+// }
+// delay(10000000);
+
+
+// linha.rot(90);
+// delay(2000);
+// linha.nrot(90);
+// delay(2000);
+// linha.rot(360);
+// delay(1000);
+
+
+// Serial.print("E");
 // corE.printRaw();
+// Serial.print("|| D");
 // corD.printRaw();
-// linha.segueLinha();
+// Serial.println();
+
+
+linha.segueLinha();
 }
   

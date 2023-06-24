@@ -5,10 +5,10 @@
 
 #include "Arduino.h"
 
-#define VELOCIDADE_CURVA 64
-#define VELOCIDADE 96  //max 255
-#define VELOCIDADE_DIREITO 1.1
-#define VELOCIDADE_ESQUERDO 1.0
+#define VELOCIDADE 200  //max 255
+#define VELOCIDADE_DIREITO 1.02
+#define VELOCIDADE_ESQUERDO 1.18
+
 
 
 class Motor

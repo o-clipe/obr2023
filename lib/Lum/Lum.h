@@ -5,12 +5,12 @@
 
 #include "Arduino.h"
 
-#define LIMITE_EE 800
-#define LIMITE_E 700
-#define LIMITE_D 750
-#define LIMITE_DD 800
-#define LIMITE_TE 700
-#define LIMITE_TD 700
+#define LIMITE_EE 780
+#define LIMITE_E 670
+#define LIMITE_D 670
+#define LIMITE_DD 700
+#define LIMITE_TE 750
+#define LIMITE_TD 750
 
 class Lum{
   public:

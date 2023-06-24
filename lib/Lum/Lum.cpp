@@ -31,7 +31,7 @@ void Lum::setup()  // Pra rodar no setup()
 
 void Lum::processedPrint()
 {
-  Serial.print(" ");
+  Serial.print("  ");
   Serial.print(processedRead(_ee));
   Serial.print(" | ");
   Serial.print(processedRead(_e));
@@ -42,8 +42,7 @@ void Lum::processedPrint()
   Serial.print("  > ");
   Serial.print(processedRead(_te));
   Serial.print(" | ");
-  Serial.print(processedRead(_dd));
-  Serial.println();
+  Serial.print(processedRead(_td));
 }
 
 
@@ -60,8 +59,7 @@ void Lum::unprocessedPrint()
   Serial.print("  > ");
   Serial.print(analogRead(_te));
   Serial.print(" | ");
-  Serial.print(analogRead(_dd));
-  Serial.println();
+  Serial.print(analogRead(_td));
 }
 
 

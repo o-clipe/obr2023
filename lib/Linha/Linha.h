@@ -9,10 +9,11 @@
 #include "Giros.h"
 #include "Cor.h"
 
-#define DELAYPOS 50
-#define DELAYROT 50
-#define DELAYTURN 50
-#define DELAY 50
+#define DELAYPOS 10
+#define DELAYROT 25 // Constante, não tocar
+#define DELAYTURN 15
+#define DELAY 10
+#define FATOR_ANGULO 0.10
 
 
 class Linha
@@ -29,18 +30,21 @@ class Linha
     bool obstaculoTrigger=false;
     bool subidaTrigger=false;
     bool rampaDeResgateTrigger=false;
+    bool gapTrigger=false;
 
     // Steps -- O cálculo de tempo / progresso.
     unsigned int step=0; // step de agora. É atualizado a cada ciclo.
     unsigned int encruzilhadaStep=0; // step (passado) -> tempo para liberar _lastOutStep
     unsigned int lastOutStep=0; // step (passado) +- steps e.g. (steps+0 == ~100) -> tempo para resetar _lastOutSeen
+    unsigned int turnStep=0; // Toda vez que lturn ou r turn é chamado, +1
+    unsigned int rotCooldownStep=0;
 
 
     // Unidades Mínimas de Movimento
     void pos(uint16_t time_=DELAYPOS); // reto
     void npos(uint16_t time_=DELAYPOS); // ré
-    void rot(uint16_t time_=DELAYROT); // gira 90° sentido horário
-    void nrot(uint16_t time_=DELAYROT); // gira 90° sentido anti-horário
+    void rot(float graus=3); // gira 90° sentido horário
+    void nrot(float graus=3); // gira 90° sentido anti-horário
     void rturn(uint16_t time_=DELAYTURN); // somente motor esquerdo, curva para direita
     void lturn(uint16_t time_=DELAYTURN); // somente motor direito, curva para esquerda
 

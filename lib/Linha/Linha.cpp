@@ -34,6 +34,8 @@ void Linha::setup() // Chamado no Setup()
 // Segue a Linha
 void Linha::segueLinha()
 {
+  Serial.println(_lastOutSeen);
+
   step += 1;
   bool *status = _lum.processedReadAll();
   bool& ee = status[0];
@@ -43,56 +45,95 @@ void Linha::segueLinha()
   bool& te = status[4];
   bool& td = status[5];
   
-  // Triggers
-  if (colorTrigger)                              
+  if (turnStep%7 == 1)
   {
-    if(_corE.colorRead() == Green){
-      _lastOutSeen = Esquerda;
-      lastOutStep = step;
+    npos(40);
+    turnStep += 1;
+  }
+  
+  // Triggers
+  // if (colorTrigger)                              
+  // {
+  //   if(_corE.colorRead() == Green){
+  //     _lastOutSeen = Esquerda;
+  //     lastOutStep = step;
+  //   }
+  //   if(_corD.colorRead() == Green){
+  //     _lastOutSeen = Direita;
+  //     lastOutStep = step;
+  //   }
+  // }
+  if (gapTrigger) {
+    if (e) {                                 // Se o sensor da esquerda disparou, vira pra direita
+      lturn();
+      gapTrigger = false;
+    } else if (d) {                                 // Se o sensor da direita disparou, vira pra esquerda
+      rturn();
+      gapTrigger = false;
+    } else if (ee){
+      lturn(45);
+      pos(100);
+      gapTrigger = false;
+    } else if (dd) {
+      rturn(45);
+      pos(100);
+      gapTrigger = false;
     }
-    if(_corD.colorRead() == Green){
-      _lastOutSeen = Direita;
-      lastOutStep = step;
-    }
+    
   }
 
-  if (dd && ee) {                                 // Manipula _lastOutSeen e colorTrigger
+  if (dd && ee || (step - lastOutStep < 20 && ee && _lastOutSeen == Direita) || (step - lastOutStep < 20 && dd && _lastOutSeen == Esquerda)) {                                 // Manipula _lastOutSeen e colorTrigger
     _lastOutSeen = Both;
     encruzilhadaStep = step;
     colorTrigger = true;
-  } else if (dd && step - encruzilhadaStep > 10) {
+    _corD.ledOn();
+    _corE.ledOn();
+  } else if (dd && step - encruzilhadaStep > 20) {
     lastOutStep = step;
     _lastOutSeen = Direita;
-    colorTrigger = false;
-  } else if (ee && step - encruzilhadaStep > 10) {
+  } else if (ee && step - encruzilhadaStep > 20) {
     lastOutStep = step;
     _lastOutSeen = Esquerda;
-    colorTrigger = false;
   } else {
-    if (step - lastOutStep > 100) {
+    if (step - lastOutStep > 80) {
       _lastOutSeen = None;
     }
   }
 
+  if (!ee && !e && !d && !dd && !te && !td){
+    gapTrigger = true;
+  }
+  // if (!dd && !ee && lastOutStep < 13){
+  //   colorTrigger = false;
+  //   _corD.ledOff();
+  //   _corE.ledOff();
+  // }
 
   // Movimentação
   if (e && d){                                    // Se as dois sensores da frente virem ao mesmo tempo, da um pulo pra frente
-    pos(DELAYPOS*1.5);
+    pos();
   } else if (e) {                                 // Se o sensor da esquerda disparou, vira pra direita
     lturn();
   } else if (d) {                                 // Se o sensor da direita disparou, vira pra esquerda
     rturn();
   } else {  // !e && !d                           // Se não tem mais informação dos sensores da frente
     if (te && td && _lastOutSeen) {                   //  Se os sensores de tras ambos disparam - Rotaciona 90 graus caso _lastOutSeen tenha valor de lado.       
+      npos();
       if(_lastOutSeen == Direita){
-        rot();
+        rot(90);
+        _lastOutSeen = None;
       } else if (_lastOutSeen == Esquerda) {
-        nrot();
+        nrot(90);
+        _lastOutSeen = None;
       }
     } else if (te && _lastOutSeen == Esquerda) {      // Se o sensor tras esquerda dispara e _lastOutSeen era esquerda, Rotaciona -90 graus.
-      nrot();
+      npos(DELAYPOS*1.5);
+      nrot(90);
+      _lastOutSeen = None;
     } else if (td && _lastOutSeen == Direita) {       // Se o sensor tras direita dispara e _lastOutSeen era direita, Rotaciona 90 graus.
-      rot();
+      npos(DELAYPOS*1.5);
+      rot(90);
+      _lastOutSeen = None;
     } else {                                          // Se não tem sinal para curva fechada (_lastOutSeen = 0), segue reto.
       pos();
     }
@@ -124,37 +165,41 @@ void Linha::npos(uint16_t time_)  // Volta em ré
   delay(DELAY);
 }
 
-void Linha::rot(uint16_t time_)  // Rotaciona do sentido horario
+void Linha::rot(float graus)  // Rotaciona do sentido horario
 {
-  float yawAtStart = _giros.girosRead()[YAW];
-
-  
-  while (fmin(fmod(fabs(360+_giros.girosRead()[YAW]-yawAtStart), 360), fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360)) < 90.)
-  {
-    _carro.ligarMotor(me);
-    _carro.ligarMotor(mdr);
-    delay(time_);
-    _carro.parar();
-    delay(DELAY);
+  if (step - rotCooldownStep >= 20) {
+    for (int i=0; i < graus*FATOR_ANGULO; i++)
+    {
+      _carro.ligarMotor(me);
+      _carro.ligarMotor(mdr);
+      delay(DELAYROT);
+      _carro.parar();
+      delay(DELAY);
+    }
+    rotCooldownStep = step;
   }
+  
 }
 
-void Linha::nrot(uint16_t time_)  // Rotaciona do sentido antihorario
+void Linha::nrot(float graus)  // Rotaciona do sentido antihorario
 {
-  float yawAtStart = _giros.girosRead()[YAW];
-  
-  while (fmin(fmod(fabs(360+_giros.girosRead()[YAW]-yawAtStart), 360), fmod(fabs(_giros.girosRead()[YAW]-yawAtStart), 360)) < 90.)
-  {
-    _carro.ligarMotor(md);
-    _carro.ligarMotor(mer);
-    delay(time_);
-    _carro.parar();
-    delay(DELAY);
+  if (step - rotCooldownStep >= 20) {
+    for (int i=0; i < graus*FATOR_ANGULO; i++)
+    {
+      _carro.ligarMotor(md);
+      _carro.ligarMotor(mer);
+      delay(DELAYROT);
+      _carro.parar();
+      delay(DELAY);
+    }
+    rotCooldownStep = step;
   }
+  
 }
 
 void Linha::rturn(uint16_t time_)  // Vira pra direita
 {
+  turnStep += 1;
   _carro.ligarMotor(me);
   delay(time_);
   _carro.parar();
@@ -163,6 +208,7 @@ void Linha::rturn(uint16_t time_)  // Vira pra direita
 
 void Linha::lturn(uint16_t time_)  // vira pra esquerda
 {
+  turnStep += 1;
   _carro.ligarMotor(md);
   delay(time_);
   _carro.parar();
