@@ -134,23 +134,23 @@ void Linha::segueLinha()
       if(_lastOutSeen == Direita){
         rot(90);
         _lastOutSeen = None;
-        delay(100);
+        delay(200);
         npos(60);
       } else if (_lastOutSeen == Esquerda) {
         nrot(90);
         _lastOutSeen = None;
-        delay(100);
+        delay(200);
         npos(60);
       }
     } else if (te && _lastOutSeen == Esquerda && noLineStep > 4) {      // Se o sensor tras esquerda dispara e _lastOutSeen era esquerda, Rotaciona -90 graus.
       nrot(90);
       _lastOutSeen = None;
-      delay(100);
+      delay(200);
       npos(60);
     } else if (td && _lastOutSeen == Direita && noLineStep > 4) {       // Se o sensor tras direita dispara e _lastOutSeen era direita, Rotaciona 90 graus.
       rot(90);
       _lastOutSeen = None;
-      delay(100);
+      delay(200);
       npos(60);
     } else {  
       straightLineTrigger = true;                                        // Se não tem sinal para curva fechada (_lastOutSeen = 0), segue reto.

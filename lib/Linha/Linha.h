@@ -12,7 +12,7 @@
 #define DELAYPOS 10
 #define DELAYROT 25 // Constante, não tocar
 #define DELAYTURN 15
-#define DELAY 10
+#define DELAY 12
 #define FATOR_ANGULO 0.08
 
 
