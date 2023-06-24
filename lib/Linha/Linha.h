@@ -31,13 +31,15 @@ class Linha
     bool subidaTrigger=false;
     bool rampaDeResgateTrigger=false;
     bool gapTrigger=false;
+    bool straightLineTrigger=false;
 
     // Steps -- O cálculo de tempo / progresso.
     unsigned int step=0; // step de agora. É atualizado a cada ciclo.
     unsigned int encruzilhadaStep=0; // step (passado) -> tempo para liberar _lastOutStep
     unsigned int lastOutStep=0; // step (passado) +- steps e.g. (steps+0 == ~100) -> tempo para resetar _lastOutSeen
     unsigned int turnStep=0; // Toda vez que lturn ou r turn é chamado, +1
-    unsigned int rotCooldownStep=0;
+    unsigned int rotCooldownStep=0;  // step quando o robo faz um rot 
+    unsigned int noLineStep=0; // Toda vez quando o 2 sensores principais não veem linha, +1
 
 
     // Unidades Mínimas de Movimento
