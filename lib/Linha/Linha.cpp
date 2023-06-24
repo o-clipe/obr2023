@@ -103,11 +103,11 @@ void Linha::segueLinha()
   if (!ee && !e && !d && !dd && !te && !td){
     gapTrigger = true;
   }
-  // if (!dd && !ee && lastOutStep < 13){
-  //   colorTrigger = false;
-  //   _corD.ledOff();
-  //   _corE.ledOff();
-  // }
+  if (!dd && !ee && step - lastOutStep < 13 ){
+    colorTrigger = false;
+    _corD.ledOff();
+    _corE.ledOff();
+  }
 
   // Movimentação
   if (e && d){                                    // Se as dois sensores da frente virem ao mesmo tempo, da um pulo pra frente
@@ -122,18 +122,24 @@ void Linha::segueLinha()
       if(_lastOutSeen == Direita){
         rot(90);
         _lastOutSeen = None;
+        delay(20);
+        npos(75);
       } else if (_lastOutSeen == Esquerda) {
         nrot(90);
         _lastOutSeen = None;
+        delay(20);
+        npos(75);
       }
     } else if (te && _lastOutSeen == Esquerda) {      // Se o sensor tras esquerda dispara e _lastOutSeen era esquerda, Rotaciona -90 graus.
-      npos(DELAYPOS*1.5);
       nrot(90);
       _lastOutSeen = None;
+      delay(20);
+      npos(75);
     } else if (td && _lastOutSeen == Direita) {       // Se o sensor tras direita dispara e _lastOutSeen era direita, Rotaciona 90 graus.
-      npos(DELAYPOS*1.5);
       rot(90);
       _lastOutSeen = None;
+      delay(20);
+      npos(75);
     } else {                                          // Se não tem sinal para curva fechada (_lastOutSeen = 0), segue reto.
       pos();
     }
@@ -167,7 +173,7 @@ void Linha::npos(uint16_t time_)  // Volta em ré
 
 void Linha::rot(float graus)  // Rotaciona do sentido horario
 {
-  if (step - rotCooldownStep >= 20) {
+  if (step - rotCooldownStep >= 10) {
     for (int i=0; i < graus*FATOR_ANGULO; i++)
     {
       _carro.ligarMotor(me);
@@ -183,7 +189,7 @@ void Linha::rot(float graus)  // Rotaciona do sentido horario
 
 void Linha::nrot(float graus)  // Rotaciona do sentido antihorario
 {
-  if (step - rotCooldownStep >= 20) {
+  if (step - rotCooldownStep >= 10) {
     for (int i=0; i < graus*FATOR_ANGULO; i++)
     {
       _carro.ligarMotor(md);
