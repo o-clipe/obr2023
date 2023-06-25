@@ -5,6 +5,8 @@
 
 #include "Arduino.h"
 
+#define LIMITE_BRANCO 80
+
 #define None 0
 #define Red 1
 #define Green 2
@@ -17,6 +19,7 @@ class Cor
     Cor(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t out, uint8_t led, long limiteBranco);
     void setup();  // Pra rodar no setup()
     long* rgbaRead();  // Le sensor e retorna array sendo [red, green, blue, all]
+    long readBranco();  // Le e retorna valor do branco.
     uint8_t rgbaToColorInt(long* rgba);  // Calcula cor mais visível e retorna código entre Red Green Blue.
     uint8_t colorRead();  // Le sensor e retorna o código da cor mais visível.
     void printRaw();  // Mostra valor dos sensores.
@@ -33,6 +36,7 @@ class Cor
     uint8_t _out;
     uint8_t _led;
     long _limiteBranco;
+    long _result;
 };
 
 #endif

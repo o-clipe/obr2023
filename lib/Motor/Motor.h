@@ -6,8 +6,8 @@
 #include "Arduino.h"
 
 #define VELOCIDADE 200  //max 255
-#define VELOCIDADE_DIREITO 1.02
-#define VELOCIDADE_ESQUERDO 1.18
+#define VELOCIDADE_DIREITO 1.05
+#define VELOCIDADE_ESQUERDO 1.16
 
 
 

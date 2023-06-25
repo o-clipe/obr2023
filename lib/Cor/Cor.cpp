@@ -22,28 +22,42 @@ void Cor::setup() // Chamado no Setup()
   pinMode(_s1, OUTPUT);
   pinMode(_s2, OUTPUT);
   pinMode(_s3, OUTPUT);
+pinMode(_led, OUTPUT);
   pinMode(_out, INPUT);
-  pinMode(_led, OUTPUT);
+
 
   digitalWrite(_s0, HIGH);
   digitalWrite(_s1, LOW);
 }
 
+long Cor::readBranco()
+{
+    pinMode(_s2, HIGH);
+    pinMode(_s3, LOW);
+    _result = pulseIn(_out, LOW);
+    return _result;
+}
 
 long* Cor::rgbaRead()
 {
-    pinMode(_s2, HIGH);
-    pinMode(_s3, HIGH);
-    _rgba[1] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);   
-
     pinMode(_s2, LOW);
-    _rgba[2] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
-
     pinMode(_s3, LOW);
-    _rgba[0] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
+    delay(20);
+    _rgba[0] = pulseIn(_out, LOW);
 
     pinMode(_s2, HIGH);
-    _rgba[3] = pulseIn(_out, digitalRead(_out) == HIGH ? LOW : HIGH);
+    delay(20);
+    _rgba[3] = pulseIn(_out, LOW);
+
+
+    pinMode(_s3, HIGH);
+    pinMode(_s2, LOW);
+    delay(20);
+    _rgba[2] = pulseIn(_out, LOW);
+
+    pinMode(_s3, HIGH);
+    delay(20);
+    _rgba[1] = pulseIn(_out, LOW);   
 
     return _rgba;
 }

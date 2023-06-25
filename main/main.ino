@@ -2,6 +2,7 @@
 
 #define SensorForaEsq A0  // ** Sensores de Luminosidade
 #define SensorEsq A1
+#define SensorMeio A6
 #define SensorDir A2
 #define SensorForaDir A3
 #define SensorTrasEsq A4
@@ -29,6 +30,12 @@
 #define DColorPinOut 32
 #define DColorPinLed 30
 
+#define ESomTrigger 0
+#define ESomEcho 0
+
+#define DSomTrigger 0
+#define DSomEcho 0
+
 // MAIS OS 2 CABOS DO GIROSCOPIO
 
 #include <Lum.h>
@@ -36,17 +43,20 @@
 #include <Giros.h>
 #include <Motor.h>
 #include <Cor.h>
+#include <Som.h>
 
 #define LIMITE_BRANCO_E 1000
 #define LIMITE_BRANCO_D 100
 
 
-Lum lum(SensorForaEsq, SensorEsq, SensorDir, SensorForaDir, SensorTrasEsq, SensorTrasDir);
+Lum lum(SensorForaEsq, SensorEsq, SensorMeio, SensorDir, SensorForaDir, SensorTrasEsq, SensorTrasDir);
 Motor carro(MotorDireito, MotorEsquerdo, MotorDireitoRe, MotorEsquerdoRe, EntradaEn1, EntradaEn2);
 Giros giros;
 Cor corE(EColorPinS0, EColorPinS1, EColorPinS2, EColorPinS3, EColorPinOut, EColorPinLed, LIMITE_BRANCO_E);
 Cor corD(DColorPinS0, DColorPinS1, DColorPinS2, DColorPinS3, DColorPinOut, DColorPinLed, LIMITE_BRANCO_D);
-Linha linha(lum, carro, giros, corE, corD);
+Som somE(ESomTrigger, ESomEcho);
+Som somD(DSomTrigger, DSomEcho);
+Linha linha(lum, carro, giros, corE, corD, somE, somD);
 
 
 
@@ -68,9 +78,9 @@ Serial.begin(115200);
 
 void loop() 
 {
-lum.unprocessedPrint();
-lum.processedPrint();
-Serial.println();
+// lum.unprocessedPrint();
+// lum.processedPrint();
+// Serial.println();
 
 
 // for (int i=0; i < 13; i++)
@@ -79,15 +89,18 @@ Serial.println();
 // }
 // delay(10000000);
 
-
+// linha.rotCooldownStep += 100;
 // linha.rot(90);
 // delay(2000);
+// linha.rotCooldownStep += 100;
 // linha.nrot(90);
 // delay(2000);
+// linha.rotCooldownStep += 100;
 // linha.rot(360);
 // delay(1000);
 
-
+// corE.ledOn();
+// corD.ledOn();
 // Serial.print("E");
 // corE.printRaw();
 // Serial.print("|| D");
@@ -96,5 +109,13 @@ Serial.println();
 
 
 linha.segueLinha();
+
+// carro.ligarReto();
+// Serial.print(" E: ");
+// Serial.print(somE.distRead());
+// Serial.print(" -OO- D: ");
+// Serial.print(somD.distRead());
+// giros.print();
+// Serial.println();
 }
   

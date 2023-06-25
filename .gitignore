@@ -1,2 +1,4 @@
 .vscode
 lib/MPU6050_tockn
+lib/Adafruit_VL53L0X
+lib/HCSR04_ultrasonic_sensor
